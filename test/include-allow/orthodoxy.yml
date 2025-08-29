@@ -1,0 +1,3 @@
+---
+IncludeForbid: ["*"]
+IncludeAllow: ["vector", "*trin*"]
