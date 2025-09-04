@@ -4,7 +4,7 @@
 cmake_minimum_required(VERSION 3.31)
 include(CheckLinkerFlag)
 
-project(orthodoxy VERSION "0.0.0" LANGUAGES C CXX)
+project(orthodoxy VERSION "1.0.0" LANGUAGES C CXX)
 
 set(ORTHODOXY_LLVM_CONFIG "" CACHE FILEPATH "Optional path to llvm-config")
 set(ORTHODOXY_CLANG_PLUGIN_INSTALL_DIR "" CACHE FILEPATH "Optional path where to install the plugin")
