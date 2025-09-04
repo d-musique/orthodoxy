@@ -7,6 +7,7 @@ include(CheckLinkerFlag)
 project(orthodoxy VERSION "0.0.0" LANGUAGES C CXX)
 
 set(ORTHODOXY_LLVM_CONFIG "" CACHE FILEPATH "Optional path to llvm-config")
+set(ORTHODOXY_CLANG_PLUGIN_INSTALL_DIR "" CACHE FILEPATH "Optional path where to install the plugin")
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND NOT CMAKE_CROSSCOMPILING)
   include(CTest)
@@ -96,12 +97,23 @@ endif()
 
 # Install plugin
 include(GNUInstallDirs)
-install(TARGETS orthodoxy
-  LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}/clang/plugins")
+if(NOT ORTHODOXY_CLANG_PLUGIN_INSTALL_DIR)
+  install(TARGETS orthodoxy
+    LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}/clang/plugins")
+else()
+  install(TARGETS orthodoxy
+    LIBRARY DESTINATION "${ORTHODOXY_CLANG_PLUGIN_INSTALL_DIR}")
+endif()
 foreach(prog IN ITEMS "clang" "clang++")
-  orthodoxy_genscript(
-    "install-bin/orthodox-${prog}" "${prog}"
-    "${CMAKE_INSTALL_FULL_LIBDIR}/clang/plugins")
+  if(NOT ORTHODOXY_CLANG_PLUGIN_INSTALL_DIR)
+    orthodoxy_genscript(
+      "install-bin/orthodox-${prog}" "${prog}"
+      "${CMAKE_INSTALL_FULL_LIBDIR}/clang/plugins")
+  else()
+    orthodoxy_genscript(
+      "install-bin/orthodox-${prog}" "${prog}"
+      "${ORTHODOXY_CLANG_PLUGIN_INSTALL_DIR}")
+  endif()
   install(PROGRAMS "${CMAKE_CURRENT_BINARY_DIR}/install-bin/orthodox-${prog}"
     DESTINATION "${CMAKE_INSTALL_BINDIR}")
 endforeach()
