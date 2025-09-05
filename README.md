@@ -87,7 +87,32 @@ helper scripts.**
 
 See the `test` folder for a set of minimal examples.
 
-## Rules
+This is a complete example which can actually be useful in practice:
+
+> .orthodoxy.yml
+>
+> ```
+> ---
+> Class: false
+> NonPOD: false
+> Constructor: false
+> Destructor: false
+> Inheritance: false
+> Access: false
+> ImplicitThis: false
+> NamedCast: false
+> OperatorOverload: false
+> ConversionOverload: false
+> Reference: false
+> Exception: false
+> RangeBasedLoop: false
+> Lambda: false
+> New: false
+> Auto: false
+> DefaultArgument: false
+> ```
+
+## Reference
 
 - [x] `InheritParent (bool)` whether to inherit from parent directory rules
 - [x] `IncludeForbid (list[string])` patterns of forbidden system headers
