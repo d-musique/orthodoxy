@@ -23,6 +23,9 @@ tailored to a particular project.
 Create a configuration file in the project directory, and compile the
 code with `orthodox-clang++`.
 
+See [Reference](#reference) for available rules, and the `test` folder
+for a set of minimal examples.
+
 > .orthodoxy.yml
 >
 > ```yaml
