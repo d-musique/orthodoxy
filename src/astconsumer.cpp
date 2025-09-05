@@ -86,6 +86,7 @@ struct OrthodoxyASTConsumer::Private
     //
     std::optional<clang::DiagnosticBuilder> Report(clang::SourceLocation loc, const OrthodoxyDiagDesc &diag);
     bool IsSuppressedLocation(clang::SourceLocation loc, llvm::ArrayRef<llvm::StringRef> ids);
+    static bool LineHasSuppressionComment(llvm::StringRef data, unsigned offset, llvm::ArrayRef<llvm::StringRef> ids);
 };
 
 OrthodoxyASTConsumer::OrthodoxyASTConsumer(clang::CompilerInstance &CI, bool warnOnly)
@@ -565,35 +566,64 @@ void OrthodoxyASTConsumer::Private::PPHooks::InclusionDirective(
     }
 }
 
-bool OrthodoxyASTConsumer::Private::IsSuppressedLocation(clang::SourceLocation loc, llvm::ArrayRef<llvm::StringRef> ids)
+bool OrthodoxyASTConsumer::Private::IsSuppressedLocation(clang::SourceLocation mainLoc, llvm::ArrayRef<llvm::StringRef> ids)
 {
-    if (!loc.isFileID())
-        return false;
-
     clang::CompilerInstance &CI = *M_CI;
     clang::SourceManager &SM = CI.getSourceManager();
 
-    bool invalidData = false;
-    llvm::StringRef data = SM.getBufferData(SM.getFileID(loc), &invalidData);
-    if (invalidData)
-        return false;
+    bool more = true;
+    clang::SourceLocation nextLoc = mainLoc;
+    while (more)
+    {
+        clang::SourceLocation nextSpellLoc = SM.getSpellingLoc(nextLoc);
 
-    unsigned offset = SM.getFileOffset(loc);
-    unsigned lineStart = offset;
-    unsigned lineEnd = offset;
+        llvm::SmallVector<clang::SourceLocation, 2> locations = {nextLoc, nextSpellLoc};
+        if (nextSpellLoc == nextLoc) locations.pop_back();
+
+        for (clang::SourceLocation loc : locations)
+        {
+            clang::SourceLocation fileLoc = loc.isFileID() ?
+                loc : SM.getFileLoc(loc);
+            clang::FileID fileID = SM.getFileID(fileLoc);
+
+            bool invalid = false;
+            llvm::StringRef data = SM.getBufferData(fileID, &invalid);
+            if (invalid) continue;
+
+            unsigned offset = SM.getFileOffset(fileLoc);
+            if (LineHasSuppressionComment(data, offset, ids))
+                return true;
+        }
+
+        more = false;
+        if (nextLoc.isMacroID())
+        {
+            nextLoc = SM.getImmediateMacroCallerLoc(nextLoc);
+            more = true;
+        }
+    }
+
+    return false;
+}
+
+bool OrthodoxyASTConsumer::Private::LineHasSuppressionComment(llvm::StringRef data, unsigned offset, llvm::ArrayRef<llvm::StringRef> ids)
+{
+    llvm::SmallString<64> pattern;
+    unsigned start = offset;
+    unsigned end = offset;
     char c;
 
-    while (lineStart > 0 && (c = data[lineStart - 1]) != '\n' && c != '\r')
-        --lineStart;
-    while (lineEnd < data.size() && (c = data[lineEnd]) != '\n' && c != '\r')
-        ++lineEnd;
+    while (start > 0 && (c = data[start - 1]) != '\n' && c != '\r')
+        --start;
+    while (end < data.size() && (c = data[end]) != '\n' && c != '\r')
+        ++end;
 
-    llvm::StringRef line{data.data() + lineStart, lineEnd - lineStart};
-    llvm::SmallString<64> pattern;
+    llvm::StringRef line{data.data() + start, end - start};
     for (llvm::StringRef id : ids)
     {
         pattern = {"HERESY(", id, ")"};
         if (line.contains(pattern)) return true;
     }
+
     return false;
 }
