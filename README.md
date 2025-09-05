@@ -50,10 +50,9 @@ for a set of minimal examples.
 > ```
 
 If present in source code, any use of a disabled language features
-will raise a compilation error.
-
-One can suppress such errors on an individual basis by writing a
-comment on the same line as the element which raises the error.
+will raise a compilation error. One can suppress such errors on an
+individual basis by writing a comment on the same line as the element
+which raises the error.
 
 > example.cpp
 >
