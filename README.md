@@ -13,85 +13,19 @@ Feedback is appreciated.**
 
 ## Introduction
 
-This is a plugin for clang which enforces C++ programming rules to
-disable a set of undesired features.
-These rules are defined by the user on a per-directory basis.
+Orthodoxy is a plugin for the Clang compiler, which selectively
+disables specific features of the C++ language. This way, a programmer
+can configure their own custom subset of the C++ language which is
+tailored to a particular project.
 
-While the main goal is to allow enforcing Orthodox C++ practices with
-any desired level of strictness, anyone may find it useful in order to
-enforce any specific programming guidelines.
+## Basic usage
 
-## Rationale
-
-With the evolution of the C++ language, the set of features provided
-by the standard library and the core language grows rapidly.
-
-This evolution leads to an unfortunate trend: compiles are
-substantially slower than with former revisions of the language.
-This inconvenience is not necessarily outweighed by the benefits of
-getting the newer functionality, which sometimes motivates a rejection
-of Modern C++.
-
-There is a desire to limit what subset of the language gets used in a
-given project, to avoid complication and slowness.
-
-## How it works
-
-The functionality is implemented in a clang plugin, which is enabled
-on the command-line of the compiler. One can alternatively invoke the
-wrapper program `orthodox-clang++`.
-
-`clang++ -fplugin=/usr/lib64/clang/plugins/orthodoxy.so`
-
-The plugin registers a pass in the compilation process, which
-navigates the AST to find uses of forbidden language features.
-
-If something forbidden is detected, the plugin emits an error
-diagnostic with the location of the problem, and halts the
-compilation.
-
-The verifications can be bypassed on an individual basis by writing a
-comment on the same line as the offending code.
-
-`static_cast<int>(x); /* HERESY(static-cast) */`
-
-The set of forbidden features is controlled by a file `.orthodoxy.yml`
-(alternatively `orthodoxy.yml`) which contains a set of rules. The
-file is located in a parent directory of the source file.
-
-Note that the rules in the `.orthodoxy.yml` file only affect the
-source files in its directory. Included files from elsewhere are
-affected by the `.orthodoxy.yml` of the directory where they come from.
-
-The rules will not be inherited from parent directories, unless the
-rule `InheritParent: true` is given.
-
-## Installation
-
-This compiler plugin is tightly integrated with a particular version
-of the Clang compiler, so you have to compile a version that matches
-your installed compiler.
-
-Get the source code and run these commands.
-
-```
-cmake -S . -B build -DCMAKE_BUILD_TYPE=RelWithDebInfo
-cmake --build build
-sudo cmake --build build --target install
-```
-
-**TODO: Help needed to write Windows-specific instructions and
-helper scripts.**
-
-## Usage
-
-See the `test` folder for a set of minimal examples.
-
-This is a complete example which can actually be useful in practice:
+Create a configuration file in the project directory, and compile the
+code with `orthodox-clang++`.
 
 > .orthodoxy.yml
 >
-> ```
+> ```yaml
 > ---
 > Class: false
 > NonPOD: false
@@ -112,9 +46,36 @@ This is a complete example which can actually be useful in practice:
 > DefaultArgument: false
 > ```
 
+If present in source code, any use of a disabled language features
+will raise a compilation error.
+
+One can suppress such errors on an individual basis by writing a
+comment on the same line as the element which raises the error.
+
+> example.cpp
+>
+> ```cpp
+> static_cast<int>(x); /* HERESY(static-cast)
+> ```
+
+## Installation
+
+This compiler plugin tightly integrates with a particular version of
+the Clang compiler, so you have to compile a version that matches your
+installed compiler.
+
+```sh
+cmake -S . -B build -DCMAKE_BUILD_TYPE=RelWithDebInfo
+cmake --build build
+sudo cmake --build build --target install
+```
+
+**TODO: Help needed to write Windows-specific instructions and
+helper scripts.**
+
 ## Reference
 
-- [x] `InheritParent (bool)` whether to inherit from parent directory rules
+- [x] `InheritParent (bool)` inherit from parent directory rules (default: `false`)
 - [x] `IncludeForbid (list[string])` patterns of forbidden system headers
 - [x] `IncludeAllow (list[string])` patterns of allowed system headers
 - [x] `Class (bool)` structures declared with the `class` keyword
@@ -161,6 +122,20 @@ This is a complete example which can actually be useful in practice:
 - [x] `UserDefinedLiteral (bool)` user-defined literals
 - [x] `DefaultArgument (bool)` default arguments
 - [x] `Namespace (bool)` namespaces
+
+## Motivation
+
+C++ is often considered a very complicated language, while C is very
+simplistic, and there exists no language in between to fill the gap.
+As C++ adds features and grows its standard library, complication
+worsens and compilation speed degrades.
+
+Many developers limit themselves to more of less strict, vaguely
+defined subsets of C++. One such subset is known as Orthodox C++.
+
+Orthodoxy is named after Orthodox C++ and its goal is to easily
+remodel C++ into a simpler, *better C* language according to the needs of
+a specific project.
 
 ## Copyright
 
