@@ -3,11 +3,18 @@
 
 cmake_minimum_required(VERSION 3.31)
 include(CheckLinkerFlag)
+include(GNUInstallDirs)
 
 project(orthodoxy VERSION "1.0.0" LANGUAGES C CXX)
 
+#---------------------------------------------------------------------
+# Options
+
 set(ORTHODOXY_LLVM_CONFIG "" CACHE FILEPATH "Optional path to llvm-config")
 set(ORTHODOXY_CLANG_PLUGIN_INSTALL_DIR "" CACHE FILEPATH "Optional path where to install the plugin")
+
+#---------------------------------------------------------------------
+# Compile flags
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND NOT CMAKE_CROSSCOMPILING)
   include(CTest)
@@ -28,6 +35,109 @@ if(NOT MSVC)
   add_compile_options("-Wall" "-Wextra")
 endif()
 
+check_linker_flag(C "-Wl,--no-undefined" HAVE_LINKER_FLAG_NO_UNDEFINED)
+
+#---------------------------------------------------------------------
+# Dependencies
+
+add_library(orthodoxy-llvm-clang INTERFACE)
+
+set(ACTUAL_LLVM_TOOL_SUFFIX "") # tool suffix, eg. "-21" if "llvm-config-21"
+
+if(ORTHODOXY_LLVM_CONFIG)
+  set(ACTUAL_LLVM_CONFIG "${ORTHODOXY_LLVM_CONFIG}")
+elseif(NOT CMAKE_CROSSCOMPILING)
+  find_program(ACTUAL_LLVM_CONFIG "llvm-config" REQUIRED NO_CACHE)
+else()
+  set(ACTUAL_LLVM_CONFIG "")
+endif()
+
+function(orthodoxy_get_suffix_from_llvmconfig llvmconfig outvar)
+  get_filename_component(name "${llvmconfig}" NAME)
+  string(FIND "${name}" "llvm-config" pos REVERSE)
+  if(pos EQUAL -1)
+    set(suffix "")
+  else()
+    math(EXPR pos "${pos}+11")
+    string(SUBSTRING "${name}" "${pos}" -1 suffix)
+  endif()
+  set("${outvar}" "${suffix}" PARENT_SCOPE)
+endfunction()
+
+function(orthodoxy_get_suffix_without_llvmconfig resultvar)
+  get_property(configurations
+    TARGET llvm-config
+    PROPERTY IMPORTED_CONFIGURATIONS)
+  list(GET configurations 0 configuration)
+  get_property(llvmconfig
+    TARGET llvm-config
+    PROPERTY "IMPORTED_LOCATION_${configuration}")
+  orthodoxy_get_suffix_from_llvmconfig("${llvmconfig}" result)
+  set("${resultvar}" "${result}" PARENT_SCOPE)
+endfunction()
+
+function(orthodoxy_llvmconfig_get flag resultvar)
+  execute_process(COMMAND "${ACTUAL_LLVM_CONFIG}" "${flag}"
+    OUTPUT_VARIABLE result
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    COMMAND_ERROR_IS_FATAL ANY)
+  set("${resultvar}" "${result}" PARENT_SCOPE)
+endfunction()
+
+function(orthodoxy_get_major_version version resultvar)
+  string(FIND "${version}" "." pos)
+  string(SUBSTRING "${version}" 0 "${pos}" result)
+  set("${resultvar}" "${result}" PARENT_SCOPE)
+endfunction()
+
+# Find clang with llvm-config (the preferred method)
+if(ACTUAL_LLVM_CONFIG)
+  message(STATUS "LLVM config: ${ACTUAL_LLVM_CONFIG}")
+  orthodoxy_llvmconfig_get("--includedir" LLVM_INCLUDE_DIR)
+  orthodoxy_llvmconfig_get("--libdir" LLVM_LIBRARY_DIR)
+  orthodoxy_llvmconfig_get("--version" LLVM_VERSION)
+  message(STATUS "LLVM headers: ${LLVM_INCLUDE_DIR}")
+  message(STATUS "LLVM libraries: ${LLVM_LIBRARY_DIR}")
+  message(STATUS "LLVM version: ${LLVM_VERSION}")
+  target_include_directories(orthodoxy-llvm-clang INTERFACE "${LLVM_INCLUDE_DIR}")
+  target_link_libraries(orthodoxy-llvm-clang INTERFACE "clang-cpp" "LLVM")
+  target_link_directories(orthodoxy-llvm-clang INTERFACE "${LLVM_LIBRARY_DIR}")
+endif()
+
+# Find clang without llvm-config
+if(NOT ACTUAL_LLVM_CONFIG)
+  find_package(Clang CONFIG REQUIRED)
+  find_package(LLVM CONFIG REQUIRED)
+  target_include_directories(orthodoxy-llvm-clang INTERFACE
+    ${CLANG_INCLUDE_DIRS} ${LLVM_INCLUDE_DIRS})
+  target_link_libraries(orthodoxy-llvm-clang INTERFACE
+    clang-cpp LLVM)
+endif()
+
+# Find the major version
+orthodoxy_get_major_version("${LLVM_VERSION}" LLVM_MAJOR_VERSION)
+message(STATUS "LLVM major version: ${LLVM_MAJOR_VERSION}")
+
+# Installation-specific names and paths with llvm-config
+if(ACTUAL_LLVM_CONFIG)
+  orthodoxy_get_suffix_from_llvmconfig("${ACTUAL_LLVM_CONFIG}" ACTUAL_LLVM_TOOL_SUFFIX)
+endif()
+
+# Installation-specific names and paths without llvm-config
+if(NOT ACTUAL_LLVM_CONFIG)
+  # HACK: get the name of llvm-config from cmake and deduce from that
+  orthodoxy_get_suffix_without_llvmconfig(ACTUAL_LLVM_TOOL_SUFFIX)
+endif()
+
+# XXX as of currently, Clang does not have a standard location for installing plugins
+set(ACTUAL_CLANG_PLUGIN_DIR "${LLVM_LIBRARY_DIR}/clang/${LLVM_MAJOR_VERSION}/plugins")
+
+message(STATUS "LLVM tool suffix: ${ACTUAL_LLVM_TOOL_SUFFIX}")
+message(STATUS "Clang plugin directory: ${ACTUAL_CLANG_PLUGIN_DIR}")
+
+#---------------------------------------------------------------------
+# Target
+
 add_library(orthodoxy MODULE)
 target_sources(orthodoxy PRIVATE
   "src/astconsumer.cpp"
@@ -37,43 +147,13 @@ target_sources(orthodoxy PRIVATE
   "src/diagdesc.cpp"
   "src/utility.cpp"
   "src/main.cpp")
-target_precompile_headers(orthodoxy PRIVATE
-  "src/stdafx.h")
-set_target_properties(orthodoxy PROPERTIES
-  PREFIX "")
+target_precompile_headers(orthodoxy PRIVATE "src/stdafx.h")
+set_target_properties(orthodoxy PROPERTIES PREFIX "")
+target_link_libraries(orthodoxy PRIVATE orthodoxy-llvm-clang)
 
-if(NOT ORTHODOXY_LLVM_CONFIG)
-  find_package(Clang CONFIG REQUIRED)
-  find_package(LLVM CONFIG REQUIRED)
-  target_include_directories(orthodoxy PRIVATE
-    ${CLANG_INCLUDE_DIRS}
-    ${LLVM_INCLUDE_DIRS})
-  target_link_libraries(orthodoxy PRIVATE
-    clang-cpp LLVM)
-else()
-  message(STATUS "LLVM config: ${ORTHODOXY_LLVM_CONFIG}")
-  #
-  execute_process(COMMAND "${ORTHODOXY_LLVM_CONFIG}" "--includedir"
-    OUTPUT_VARIABLE LLVM_INCLUDE_DIR
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-    COMMAND_ERROR_IS_FATAL ANY)
-  execute_process(COMMAND "${ORTHODOXY_LLVM_CONFIG}" "--libdir"
-    OUTPUT_VARIABLE LLVM_LIBRARY_DIR
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-    COMMAND_ERROR_IS_FATAL ANY)
-  message(STATUS "LLVM headers: ${LLVM_INCLUDE_DIR}")
-  message(STATUS "LLVM libraries: ${LLVM_LIBRARY_DIR}")
-  target_include_directories(orthodoxy PRIVATE "${LLVM_INCLUDE_DIR}")
-  target_link_libraries(orthodoxy PRIVATE "clang-cpp" "LLVM")
-  target_link_directories(orthodoxy PRIVATE "${LLVM_LIBRARY_DIR}")
-endif()
+#---------------------------------------------------------------------
+# Script generator
 
-check_linker_flag(C "-Wl,--no-undefined" HAVE_LINKER_FLAG_NO_UNDEFINED)
-if(HAVE_LINKER_FLAG_NO_UNDEFINED)
-  target_link_options(orthodoxy PRIVATE "-Wl,--no-undefined")
-endif()
-
-# Scripts generation
 function(orthodoxy_genscript outfile clang plugindir)
   set(pluginext "${CMAKE_SHARED_MODULE_SUFFIX}")
   configure_file(
@@ -86,39 +166,43 @@ function(orthodoxy_genscript outfile clang plugindir)
     @ONLY)
 endfunction()
 
+#---------------------------------------------------------------------
 # In-tree compiler scripts
+
 if(NOT CMAKE_CROSSCOMPILING AND NOT WIN32)
   foreach(prog IN ITEMS "clang" "clang++")
-    orthodoxy_genscript(
-      "orthodox-${prog}" "${prog}"
+    orthodoxy_genscript("orthodox-${prog}"
+      "${prog}${ACTUAL_LLVM_TOOL_SUFFIX}"
       "${CMAKE_CURRENT_BINARY_DIR}")
   endforeach()
 endif()
 
-# Install plugin
-include(GNUInstallDirs)
-if(NOT ORTHODOXY_CLANG_PLUGIN_INSTALL_DIR)
-  install(TARGETS orthodoxy
-    LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}/clang/plugins")
-else()
-  install(TARGETS orthodoxy
-    LIBRARY DESTINATION "${ORTHODOXY_CLANG_PLUGIN_INSTALL_DIR}")
-endif()
-foreach(prog IN ITEMS "clang" "clang++")
-  if(NOT ORTHODOXY_CLANG_PLUGIN_INSTALL_DIR)
-    orthodoxy_genscript(
-      "install-bin/orthodox-${prog}" "${prog}"
-      "${CMAKE_INSTALL_FULL_LIBDIR}/clang/plugins")
-  else()
-    orthodoxy_genscript(
-      "install-bin/orthodox-${prog}" "${prog}"
-      "${ORTHODOXY_CLANG_PLUGIN_INSTALL_DIR}")
-  endif()
-  install(PROGRAMS "${CMAKE_CURRENT_BINARY_DIR}/install-bin/orthodox-${prog}"
-    DESTINATION "${CMAKE_INSTALL_BINDIR}")
-endforeach()
+#---------------------------------------------------------------------
+# Installation
 
+function(orthodoxy_install_plugin plugindir)
+  message(STATUS "Plugin will be installed in ${plugindir}")
+  install(TARGETS orthodoxy LIBRARY DESTINATION "${plugindir}")
+  foreach(prog IN ITEMS "clang" "clang++")
+    orthodoxy_genscript(
+      "install-bin/orthodox-${prog}${ACTUAL_LLVM_TOOL_SUFFIX}"
+      "${prog}${ACTUAL_LLVM_TOOL_SUFFIX}"
+      "${plugindir}")
+    install(PROGRAMS
+      "${CMAKE_CURRENT_BINARY_DIR}/install-bin/orthodox-${prog}${ACTUAL_LLVM_TOOL_SUFFIX}"
+      DESTINATION "${CMAKE_INSTALL_BINDIR}")
+  endforeach()
+endfunction()
+
+if(ORTHODOXY_CLANG_PLUGIN_INSTALL_DIR)
+  orthodoxy_install_plugin("${ORTHODOXY_CLANG_PLUGIN_INSTALL_DIR}")
+else()
+  orthodoxy_install_plugin("${ACTUAL_CLANG_PLUGIN_DIR}")
+endif()
+
+#---------------------------------------------------------------------
 # Tests
+
 if(BUILD_TESTING AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND NOT CMAKE_CROSSCOMPILING)
   find_package(Python REQUIRED COMPONENTS Interpreter)
 
