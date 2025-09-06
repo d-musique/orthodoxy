@@ -57,7 +57,7 @@ which raises the error.
 > example.cpp
 >
 > ```cpp
-> static_cast<int>(x); /* HERESY(static-cast)
+> static_cast<int>(x); /* HERESY(static-cast) */
 > ```
 
 ## Installation
