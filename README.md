@@ -72,6 +72,25 @@ which raises the error.
 > static_cast<int>(x); /* HERESY(static-cast) */
 > ```
 
+## Header rules
+
+Orthodoxy is able to forbid the use of certain system headers, using
+the combination of a blacklist and a whitelist, defined respectively
+by `IncludeForbid` and `IncludeAllow`.
+
+The whitelist has priority over the blacklist.
+
+> .orthodoxy.yml
+>
+> ```yaml
+> ---
+> IncludeForbid: ["*"]
+> IncludeAllow: ["*.h*", "atomic"]
+> ```
+
+For example, the rules above can be used to block the entire STL, with
+the exception of one particular header (in this case `<atomic>`).
+
 ## Installation
 
 This compiler plugin tightly integrates with a particular version of
