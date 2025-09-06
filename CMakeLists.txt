@@ -188,7 +188,7 @@ foreach(prog IN ITEMS "clang" "clang++")
   orthodoxy_genscript(
     "install-bin/orthodox-${prog}${ACTUAL_LLVM_TOOL_SUFFIX}"
     "${prog}${ACTUAL_LLVM_TOOL_SUFFIX}"
-    "${plugindir}")
+    "${ACTUAL_CLANG_PLUGIN_DIR}")
   install(PROGRAMS
     "${CMAKE_CURRENT_BINARY_DIR}/install-bin/orthodox-${prog}${ACTUAL_LLVM_TOOL_SUFFIX}"
     DESTINATION "${CMAKE_INSTALL_BINDIR}")
