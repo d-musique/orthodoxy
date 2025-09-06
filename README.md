@@ -29,9 +29,9 @@ enable it for all subsequent targets.
 > CMakeLists.txt
 >
 > ```
-> find_package(orthodoxy CONFIG)
-> if(orthodoxy_FOUND)
->   link_libraries(orthodoxy::orthodoxy)
+> find_package(orthodoxy CONFIG OPTIONAL_COMPONENTS plugin)
+> if(orthodoxy_plugin_FOUND)
+>   link_libraries(orthodoxy::plugin)
 > endif()
 > ```
 

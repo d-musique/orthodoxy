@@ -4,6 +4,14 @@
 @PACKAGE_INIT@
 
 set(orthodoxy_FOUND FALSE)
+set(orthodoxy_plugin_FOUND FALSE)
+
+if(NOT DEFINED CMAKE_CXX_COMPILER_ID)
+  message(WARNING "orthodoxy: CXX language must be enabled first")
+  return()
+endif()
+
+set(orthodoxy_FOUND TRUE)
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
   execute_process(COMMAND "${CMAKE_CXX_COMPILER}" "-dumpversion"
@@ -13,20 +21,25 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
   string(FIND "${_clangVersion}" "." _clangVersionDotPos)
   string(SUBSTRING "${_clangVersion}" 0 "${_clangVersionDotPos}" _clangMajorVersion)
   #
-  if(IS_DIRECTORY "@PACKAGE_ACTUAL_CLANG_PLUGIN_BASE_DIR@/${_clangMajorVersion}")
+  if(NOT EXISTS "@PACKAGE_ACTUAL_CLANG_PLUGIN_BASE_DIR@/${_clangMajorVersion}/orthodoxy${CMAKE_SHARED_MODULE_SUFFIX}")
+    message(STATUS "orthodoxy plugin: NOT FOUND")
+  else()
     set_and_check(ORTHODOXY_CLANG_PLUGIN_BASE_DIR "@PACKAGE_ACTUAL_CLANG_PLUGIN_BASE_DIR@")
     set_and_check(ORTHODOXY_CLANG_PLUGIN_DIR "${ORTHODOXY_CLANG_PLUGIN_BASE_DIR}/${_clangMajorVersion}")
     set_and_check(ORTHODOXY_CLANG_PLUGIN "${ORTHODOXY_CLANG_PLUGIN_DIR}/orthodoxy${CMAKE_SHARED_MODULE_SUFFIX}")
+    message(STATUS "Found orthodoxy plugin: ${ORTHODOXY_CLANG_PLUGIN}")
     #
-    add_library(orthodoxy INTERFACE)
-    target_compile_options(orthodoxy INTERFACE "-fplugin=${ORTHODOXY_CLANG_PLUGIN}")
-    add_library(orthodoxy::orthodoxy ALIAS orthodoxy)
-    set(orthodoxy_FOUND TRUE)
+    add_library(orthodoxy-plugin INTERFACE)
+    target_compile_options(orthodoxy-plugin INTERFACE "-fplugin=${ORTHODOXY_CLANG_PLUGIN}")
+    add_library(orthodoxy::plugin ALIAS orthodoxy-plugin)
+    set(orthodoxy_plugin_FOUND TRUE)
   endif()
   #
   unset(_clangVersion)
   unset(_clangVersionDotPos)
   unset(_clangMajorVersion)
+elseif(CMAKE_CXX_COMPILER_ID)
+  message(STATUS "orthodoxy plugin: not available for compiler ${CMAKE_CXX_COMPILER_ID}")
 endif()
 
 check_required_components(orthodoxy)
