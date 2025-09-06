@@ -2,11 +2,11 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 cmake_minimum_required(VERSION 3.31)
+project(orthodoxy VERSION "1.0.0" LANGUAGES C CXX)
+
 include(CheckLinkerFlag)
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
-
-project(orthodoxy VERSION "1.0.0" LANGUAGES C CXX)
 
 #---------------------------------------------------------------------
 # Options
