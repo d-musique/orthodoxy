@@ -194,15 +194,20 @@ foreach(prog IN ITEMS "clang" "clang++")
     DESTINATION "${CMAKE_INSTALL_BINDIR}")
 endforeach()
 
-block(SCOPE_FOR VARIABLES)
-  configure_package_config_file(
-    "cmake/orthodoxyConfig.cmake.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/orthodoxyConfig.cmake"
-    INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/orthodoxy"
-    PATH_VARS ACTUAL_CLANG_PLUGIN_BASE_DIR)
-endblock()
+configure_package_config_file(
+  "cmake/orthodoxyConfig.cmake.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/orthodoxyConfig.cmake"
+  INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/orthodoxy"
+  PATH_VARS ACTUAL_CLANG_PLUGIN_BASE_DIR)
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/orthodoxyConfig.cmake"
   DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/orthodoxy")
+
+configure_file(
+  "pkgconfig/orthodoxy-for-clang.pc.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/orthodoxy-for-clang${LLVM_MAJOR_VERSION}.pc"
+  @ONLY)
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/orthodoxy-for-clang${LLVM_MAJOR_VERSION}.pc"
+  DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig")
 
 #---------------------------------------------------------------------
 # Tests

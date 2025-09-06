@@ -1,0 +1,8 @@
+pluginbasedir=@ACTUAL_CLANG_PLUGIN_BASE_DIR@
+plugindir=${pluginbasedir}/@LLVM_MAJOR_VERSION@
+pluginfile=${plugindir}/orthodoxy@CMAKE_SHARED_MODULE_SUFFIX@
+
+Name: orthodoxy-for-clang@LLVM_MAJOR_VERSION@
+Description: Clang plugin to enforce custom C++ feature restrictions
+Version: @PROJECT_VERSION@
+Cflags: -fplugin=${pluginfile}
