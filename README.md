@@ -23,6 +23,18 @@ tailored to a particular project.
 Create a configuration file in the project directory, and compile the
 code with `orthodox-clang++`.
 
+Under CMake, `orthodoxy` is easy to use. The following code will
+enable it for all subsequent targets.
+
+> CMakeLists.txt
+>
+> ```
+> find_package(orthodoxy CONFIG)
+> if(orthodoxy_FOUND)
+>   link_libraries(orthodoxy::orthodoxy)
+> endif()
+> ```
+
 See [Reference](#reference) for available rules, and the `test` folder
 for a set of minimal examples.
 
