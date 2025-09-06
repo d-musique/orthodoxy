@@ -4,6 +4,7 @@
 cmake_minimum_required(VERSION 3.31)
 include(CheckLinkerFlag)
 include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
 
 project(orthodoxy VERSION "1.0.0" LANGUAGES C CXX)
 
@@ -130,8 +131,8 @@ endif()
 
 # XXX Clang does not currently have a standard install location for plugins
 # see llvm/llvm-project#156821
-set(ACTUAL_CLANG_PLUGIN_DIR
-  "${CMAKE_INSTALL_FULL_LIBDIR}/orthodoxy/${LLVM_MAJOR_VERSION}")
+set(ACTUAL_CLANG_PLUGIN_BASE_DIR "${CMAKE_INSTALL_FULL_LIBDIR}/orthodoxy")
+set(ACTUAL_CLANG_PLUGIN_DIR "${ACTUAL_CLANG_PLUGIN_BASE_DIR}/${LLVM_MAJOR_VERSION}")
 
 message(STATUS "LLVM tool suffix: ${ACTUAL_LLVM_TOOL_SUFFIX}")
 message(STATUS "Clang plugin directory: ${ACTUAL_CLANG_PLUGIN_DIR}")
@@ -192,6 +193,16 @@ foreach(prog IN ITEMS "clang" "clang++")
     "${CMAKE_CURRENT_BINARY_DIR}/install-bin/orthodox-${prog}${ACTUAL_LLVM_TOOL_SUFFIX}"
     DESTINATION "${CMAKE_INSTALL_BINDIR}")
 endforeach()
+
+block(SCOPE_FOR VARIABLES)
+  configure_package_config_file(
+    "cmake/orthodoxyConfig.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/orthodoxyConfig.cmake"
+    INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/orthodoxy"
+    PATH_VARS ACTUAL_CLANG_PLUGIN_BASE_DIR)
+endblock()
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/orthodoxyConfig.cmake"
+  DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/orthodoxy")
 
 #---------------------------------------------------------------------
 # Tests

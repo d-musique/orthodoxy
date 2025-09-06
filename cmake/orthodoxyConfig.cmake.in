@@ -1,0 +1,32 @@
+# Copyright: D.M., 2025-present
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+@PACKAGE_INIT@
+
+set(orthodoxy_FOUND FALSE)
+
+if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+  execute_process(COMMAND "${CMAKE_CXX_COMPILER}" "-dumpversion"
+    OUTPUT_VARIABLE _clangVersion
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    COMMAND_ERROR_IS_FATAL ANY)
+  string(FIND "${_clangVersion}" "." _clangVersionDotPos)
+  string(SUBSTRING "${_clangVersion}" 0 "${_clangVersionDotPos}" _clangMajorVersion)
+  #
+  if(IS_DIRECTORY "@PACKAGE_ACTUAL_CLANG_PLUGIN_BASE_DIR@/${_clangMajorVersion}")
+    set_and_check(ORTHODOXY_CLANG_PLUGIN_BASE_DIR "@PACKAGE_ACTUAL_CLANG_PLUGIN_BASE_DIR@")
+    set_and_check(ORTHODOXY_CLANG_PLUGIN_DIR "${ORTHODOXY_CLANG_PLUGIN_BASE_DIR}/${_clangMajorVersion}")
+    set_and_check(ORTHODOXY_CLANG_PLUGIN "${ORTHODOXY_CLANG_PLUGIN_DIR}/orthodoxy${CMAKE_SHARED_MODULE_SUFFIX}")
+    #
+    add_library(orthodoxy INTERFACE)
+    target_compile_options(orthodoxy INTERFACE "-fplugin=${ORTHODOXY_CLANG_PLUGIN}")
+    add_library(orthodoxy::orthodoxy ALIAS orthodoxy)
+    set(orthodoxy_FOUND TRUE)
+  endif()
+  #
+  unset(_clangVersion)
+  unset(_clangVersionDotPos)
+  unset(_clangMajorVersion)
+endif()
+
+check_required_components(orthodoxy)
