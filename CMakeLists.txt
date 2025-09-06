@@ -11,7 +11,6 @@ project(orthodoxy VERSION "1.0.0" LANGUAGES C CXX)
 # Options
 
 set(ORTHODOXY_LLVM_CONFIG "" CACHE FILEPATH "Optional path to llvm-config")
-set(ORTHODOXY_CLANG_PLUGIN_INSTALL_DIR "" CACHE FILEPATH "Optional path where to install the plugin")
 
 #---------------------------------------------------------------------
 # Compile flags
@@ -129,8 +128,10 @@ if(NOT ACTUAL_LLVM_CONFIG)
   orthodoxy_get_suffix_without_llvmconfig(ACTUAL_LLVM_TOOL_SUFFIX)
 endif()
 
-# XXX as of currently, Clang does not have a standard location for installing plugins
-set(ACTUAL_CLANG_PLUGIN_DIR "${LLVM_LIBRARY_DIR}/clang/${LLVM_MAJOR_VERSION}/plugins")
+# XXX Clang does not currently have a standard install location for plugins
+# see llvm/llvm-project#156821
+set(ACTUAL_CLANG_PLUGIN_DIR
+  "${CMAKE_INSTALL_FULL_LIBDIR}/orthodoxy/${LLVM_MAJOR_VERSION}")
 
 message(STATUS "LLVM tool suffix: ${ACTUAL_LLVM_TOOL_SUFFIX}")
 message(STATUS "Clang plugin directory: ${ACTUAL_CLANG_PLUGIN_DIR}")
@@ -180,25 +181,17 @@ endif()
 #---------------------------------------------------------------------
 # Installation
 
-function(orthodoxy_install_plugin plugindir)
-  message(STATUS "Plugin will be installed in ${plugindir}")
-  install(TARGETS orthodoxy LIBRARY DESTINATION "${plugindir}")
-  foreach(prog IN ITEMS "clang" "clang++")
-    orthodoxy_genscript(
-      "install-bin/orthodox-${prog}${ACTUAL_LLVM_TOOL_SUFFIX}"
-      "${prog}${ACTUAL_LLVM_TOOL_SUFFIX}"
-      "${plugindir}")
-    install(PROGRAMS
-      "${CMAKE_CURRENT_BINARY_DIR}/install-bin/orthodox-${prog}${ACTUAL_LLVM_TOOL_SUFFIX}"
-      DESTINATION "${CMAKE_INSTALL_BINDIR}")
-  endforeach()
-endfunction()
-
-if(ORTHODOXY_CLANG_PLUGIN_INSTALL_DIR)
-  orthodoxy_install_plugin("${ORTHODOXY_CLANG_PLUGIN_INSTALL_DIR}")
-else()
-  orthodoxy_install_plugin("${ACTUAL_CLANG_PLUGIN_DIR}")
-endif()
+message(STATUS "Plugin will be installed in ${ACTUAL_CLANG_PLUGIN_DIR}")
+install(TARGETS orthodoxy LIBRARY DESTINATION "${ACTUAL_CLANG_PLUGIN_DIR}")
+foreach(prog IN ITEMS "clang" "clang++")
+  orthodoxy_genscript(
+    "install-bin/orthodox-${prog}${ACTUAL_LLVM_TOOL_SUFFIX}"
+    "${prog}${ACTUAL_LLVM_TOOL_SUFFIX}"
+    "${plugindir}")
+  install(PROGRAMS
+    "${CMAKE_CURRENT_BINARY_DIR}/install-bin/orthodox-${prog}${ACTUAL_LLVM_TOOL_SUFFIX}"
+    DESTINATION "${CMAKE_INSTALL_BINDIR}")
+endforeach()
 
 #---------------------------------------------------------------------
 # Tests
