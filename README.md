@@ -156,7 +156,7 @@ helper scripts.**
 - [x] `RangeBasedLoop (bool)` range-based loop
 - [x] `Lambda (bool)` lambda functions
     - [x] `LambdaCapture (bool)` capturing lambda functions
-- [x] `New (bool)` `new` and `delete`
+- [x] `New (bool)` operators `new` and `delete`
 - [x] `Auto (bool)` declarations with automatic type
     - [x] `AutoReturn (bool)` function declarations with automatic return type
     - [x] `AutoVariable (bool)` variable declarations with automatic type
