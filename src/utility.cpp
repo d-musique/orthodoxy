@@ -84,3 +84,20 @@ bool Orthodoxy::FunctionIsImplicitConversionConstructor(const clang::FunctionDec
     const clang::CXXConstructorDecl *ctor = llvm::dyn_cast<clang::CXXConstructorDecl>(FD);
     return ctor && !ctor->isCopyOrMoveConstructor() && ctor->isConvertingConstructor(false);
 }
+
+unsigned int Orthodoxy::NamespaceDepth(const clang::NamespaceDecl *ND, bool countAnonymous)
+{
+    unsigned int depth =
+        (countAnonymous ? 1 : !ND->isAnonymousNamespace());
+
+    const clang::DeclContext *context = ND;
+    while ((context = context->getParent()))
+    {
+        const clang::NamespaceDecl *ns =
+            llvm::dyn_cast<clang::NamespaceDecl>(context);
+        if (ns)
+            depth += (countAnonymous ? 1 : !ns->isAnonymousNamespace());
+    }
+
+    return depth;
+}

@@ -28,4 +28,6 @@ bool FunctionIsCopyConstructor(const clang::FunctionDecl *FD);
 bool FunctionIsMoveConstructor(const clang::FunctionDecl *FD);
 bool FunctionIsImplicitConversionConstructor(const clang::FunctionDecl *FD);
 
+unsigned int NamespaceDepth(const clang::NamespaceDecl *ND, bool countAnonymous);
+
 } // namespace Orthodoxy

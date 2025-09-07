@@ -66,6 +66,7 @@ struct OrthodoxyConfig
     bool UserDefinedLiteral = true;
     bool DefaultArgument = true;
     bool Namespace = true;
+    unsigned int NamespaceDepth = 0;
     bool Mutable = true;
 };
 

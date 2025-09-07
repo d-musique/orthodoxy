@@ -338,6 +338,8 @@ bool OrthodoxyASTConsumer::Private::ASTVisitor::VisitNamespaceDecl(const clang::
 
     if (!config.Namespace)
         priv->Report(ND->getLocation(), Orthodoxy::diag::Namespace());
+    else if (config.NamespaceDepth && Orthodoxy::NamespaceDepth(ND, false) > config.NamespaceDepth)
+        priv->Report(ND->getLocation(), Orthodoxy::diag::NamespaceDepth());
 
     return true;
 }

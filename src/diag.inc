@@ -198,5 +198,9 @@ DEFINE_DIAGNOSTIC(
     "namespaces are not allowed");
 
 DEFINE_DIAGNOSTIC(
+    NamespaceDepth, "namespace-depth", nullptr,
+    "namespace depth is greater than the limit");
+
+DEFINE_DIAGNOSTIC(
     Mutable, "mutable", nullptr,
     "the mutable qualifier is not allowed");

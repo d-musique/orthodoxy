@@ -160,6 +160,7 @@ helper scripts.**
 - [x] `UserDefinedLiteral (bool)` user-defined literals
 - [x] `DefaultArgument (bool)` default arguments
 - [x] `Namespace (bool)` namespaces
+- [x] `NamespaceDepth (uint)` maximum namespace depth (default: `0`, meaning infinity)
 - [x] `Mutable (bool)` variables declared with the `mutable` qualifier
 
 ## Motivation
