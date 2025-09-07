@@ -180,6 +180,10 @@ Orthodoxy is named after Orthodox C++ and its goal is to easily
 remodel C++ into a simpler, *better C* language according to the needs of
 a specific project.
 
+The specifics will not be presented in this document. Refer to
+[Orthodox C++](https://gist.github.com/bkaradzic/2e39896bc7d8c34e042b)
+for a more elaborate discussion on the topic.
+
 ## Copyright
 
 This program is free software: you can redistribute it and/or modify
