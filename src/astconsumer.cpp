@@ -188,7 +188,7 @@ bool OrthodoxyASTConsumer::Private::ASTVisitor::VisitTranslationUnitDecl(const c
         clang::Module *mod = UD->getOwningModule();
         OrthodoxyConfig &config = CM.GetConfigForSourceLocation(mod->DefinitionLoc);
         if ((!config.Module || !config.ModuleExport))
-            priv->Report(mod->DefinitionLoc, Orthodoxy::diag::ModuleExport);
+            priv->Report(mod->DefinitionLoc, Orthodoxy::diag::ModuleExport());
     }
 
     return true;
@@ -206,7 +206,7 @@ bool OrthodoxyASTConsumer::Private::ASTVisitor::VisitImportDecl(const clang::Imp
         // Import declarations can also be implicitly generated from #include/#import directives.
     {
         if ((!config.Module || !config.ModuleImport))
-            priv->Report(ID->getLocation(), Orthodoxy::diag::ModuleImport);
+            priv->Report(ID->getLocation(), Orthodoxy::diag::ModuleImport());
     }
 
     return true;
@@ -219,9 +219,9 @@ bool OrthodoxyASTConsumer::Private::ASTVisitor::VisitTagDecl(const clang::TagDec
     OrthodoxyConfig &config = CM.GetConfigForDecl(TD);
 
     if (!config.Class && Orthodoxy::TagIsClass(TD))
-        priv->Report(TD->getLocation(), Orthodoxy::diag::Class);
+        priv->Report(TD->getLocation(), Orthodoxy::diag::Class());
     else if (!config.EnumClass && Orthodoxy::TagIsEnumClass(TD))
-        priv->Report(TD->getLocation(), Orthodoxy::diag::EnumClass);
+        priv->Report(TD->getLocation(), Orthodoxy::diag::EnumClass());
 
     return true;
 }
@@ -242,7 +242,7 @@ bool OrthodoxyASTConsumer::Private::ASTVisitor::VisitAccessSpecDecl(const clang:
     OrthodoxyConfig &config = CM.GetConfigForDecl(AD);
 
     if (!config.Access || !config.MemberAccess)
-        priv->Report(AD->getLocation(), Orthodoxy::diag::MemberAccess);
+        priv->Report(AD->getLocation(), Orthodoxy::diag::MemberAccess());
 
     return true;
 }
@@ -254,17 +254,17 @@ bool OrthodoxyASTConsumer::Private::ASTVisitor::VisitFunctionDecl(const clang::F
     OrthodoxyConfig &config = CM.GetConfigForDecl(FD);
 
     if ((!config.Overload || !config.OperatorOverload) && FD->isOverloadedOperator())
-        priv->Report(FD->getLocation(), Orthodoxy::diag::OperatorOverload);
+        priv->Report(FD->getLocation(), Orthodoxy::diag::OperatorOverload());
     else if ((!config.Overload || !config.ConversionOverload) && llvm::isa<clang::CXXConversionDecl>(FD))
-        priv->Report(FD->getLocation(), Orthodoxy::diag::ConversionOverload);
+        priv->Report(FD->getLocation(), Orthodoxy::diag::ConversionOverload());
     else if ((!config.Overload || !config.FunctionOverload) && !FD->getParent()->lookup(FD->getDeclName()).isSingleResult())
-        priv->Report(FD->getLocation(), Orthodoxy::diag::FunctionOverload);
+        priv->Report(FD->getLocation(), Orthodoxy::diag::FunctionOverload());
 
     if (!config.UserDefinedLiteral && FD->getDeclName().getNameKind() == clang::DeclarationName::CXXLiteralOperatorName)
-        priv->Report(FD->getLocation(), Orthodoxy::diag::UserDefinedLiteral);
+        priv->Report(FD->getLocation(), Orthodoxy::diag::UserDefinedLiteral());
 
     if ((!config.Auto || !config.AutoReturn) && Orthodoxy::TypeIsAuto(FD->getReturnType()))
-        priv->Report(FD->getReturnTypeSourceRange().getBegin(), Orthodoxy::diag::AutoReturn);
+        priv->Report(FD->getReturnTypeSourceRange().getBegin(), Orthodoxy::diag::AutoReturn());
 
     return true;
 }
@@ -276,7 +276,7 @@ bool OrthodoxyASTConsumer::Private::ASTVisitor::VisitParmVarDecl(const clang::Pa
     OrthodoxyConfig &config = CM.GetConfigForDecl(VD);
 
     if (!config.DefaultArgument && VD->hasDefaultArg())
-        priv->Report(VD->getDefaultArg()->getExprLoc(), Orthodoxy::diag::DefaultArgument);
+        priv->Report(VD->getDefaultArg()->getExprLoc(), Orthodoxy::diag::DefaultArgument());
 
     return true;
 }
@@ -288,11 +288,11 @@ bool OrthodoxyASTConsumer::Private::ASTVisitor::VisitVarDecl(const clang::VarDec
     OrthodoxyConfig &config = CM.GetConfigForDecl(VD);
 
     if ((!config.Auto || !config.AutoVariable) && Orthodoxy::TypeIsAuto(VD->getType()))
-        priv->Report(VD->getLocation(), Orthodoxy::diag::AutoVariable);
+        priv->Report(VD->getLocation(), Orthodoxy::diag::AutoVariable());
     else if ((!config.Reference || !config.RValueReference) && Orthodoxy::TypeIsRvalueReference(VD->getType()))
-        priv->Report(VD->getLocation(), Orthodoxy::diag::RValueReference);
+        priv->Report(VD->getLocation(), Orthodoxy::diag::RValueReference());
     else if ((!config.Reference || !config.LValueReference) && Orthodoxy::TypeIsLvalueReference(VD->getType()))
-        priv->Report(VD->getLocation(), Orthodoxy::diag::LValueReference);
+        priv->Report(VD->getLocation(), Orthodoxy::diag::LValueReference());
 
     return true;
 }
@@ -304,11 +304,11 @@ bool OrthodoxyASTConsumer::Private::ASTVisitor::VisitFieldDecl(const clang::Fiel
     OrthodoxyConfig &config = CM.GetConfigForDecl(FD);
 
     if ((!config.Reference || !config.RValueReference) && Orthodoxy::TypeIsRvalueReference(FD->getType()))
-        priv->Report(FD->getLocation(), Orthodoxy::diag::RValueReference);
+        priv->Report(FD->getLocation(), Orthodoxy::diag::RValueReference());
     else if ((!config.Reference || !config.RValueReference) && Orthodoxy::TypeIsRvalueReference(FD->getType()))
-        priv->Report(FD->getLocation(), Orthodoxy::diag::RValueReference);
+        priv->Report(FD->getLocation(), Orthodoxy::diag::RValueReference());
     else if ((!config.Reference || !config.LValueReference) && Orthodoxy::TypeIsLvalueReference(FD->getType()))
-        priv->Report(FD->getLocation(), Orthodoxy::diag::LValueReference);
+        priv->Report(FD->getLocation(), Orthodoxy::diag::LValueReference());
 
     return true;
 }
@@ -320,9 +320,9 @@ bool OrthodoxyASTConsumer::Private::ASTVisitor::VisitTemplateDecl(const clang::T
     OrthodoxyConfig &config = CM.GetConfigForDecl(TD);
 
     if (!config.Concept && llvm::isa<clang::ConceptDecl>(TD))
-        priv->Report(TD->getLocation(), Orthodoxy::diag::Concept);
+        priv->Report(TD->getLocation(), Orthodoxy::diag::Concept());
     else if (!config.Template)
-        priv->Report(TD->getLocation(), Orthodoxy::diag::Template);
+        priv->Report(TD->getLocation(), Orthodoxy::diag::Template());
 
     return true;
 }
@@ -334,7 +334,7 @@ bool OrthodoxyASTConsumer::Private::ASTVisitor::VisitNamespaceDecl(const clang::
     OrthodoxyConfig &config = CM.GetConfigForDecl(ND);
 
     if (!config.Namespace)
-        priv->Report(ND->getLocation(), Orthodoxy::diag::Namespace);
+        priv->Report(ND->getLocation(), Orthodoxy::diag::Namespace());
 
     return true;
 }
@@ -346,9 +346,9 @@ bool OrthodoxyASTConsumer::Private::ASTVisitor::VisitLambdaExpr(const clang::Lam
     OrthodoxyConfig &config = CM.GetConfigForExpr(LE);
 
     if (!config.Lambda)
-        priv->Report(LE->getExprLoc(), Orthodoxy::diag::Lambda);
+        priv->Report(LE->getExprLoc(), Orthodoxy::diag::Lambda());
     else if (!config.LambdaCapture && LE->capture_begin() != LE->capture_end())
-        priv->Report(LE->getExprLoc(), Orthodoxy::diag::LambdaCapture);
+        priv->Report(LE->getExprLoc(), Orthodoxy::diag::LambdaCapture());
 
     return true;
 }
@@ -360,7 +360,7 @@ bool OrthodoxyASTConsumer::Private::ASTVisitor::VisitCStyleCastExpr(const clang:
     OrthodoxyConfig &config = CM.GetConfigForExpr(CE);
 
     if (!config.CStyleCast)
-        priv->Report(CE->getExprLoc(), Orthodoxy::diag::CStyleCast);
+        priv->Report(CE->getExprLoc(), Orthodoxy::diag::CStyleCast());
 
     return true;
 }
@@ -374,9 +374,9 @@ bool OrthodoxyASTConsumer::Private::ASTVisitor::VisitCXXRecordDecl(const clang::
     if (RD->hasDefinition())
     {
         if (!config.VirtualInheritance && RD->vbases_begin() != RD->vbases_end())
-            priv->Report(RD->getBeginLoc(), Orthodoxy::diag::VirtualInheritance);
+            priv->Report(RD->getBeginLoc(), Orthodoxy::diag::VirtualInheritance());
         else if (!config.Inheritance && RD->bases_begin() != RD->bases_end())
-            priv->Report(RD->getBeginLoc(), Orthodoxy::diag::Inheritance);
+            priv->Report(RD->getBeginLoc(), Orthodoxy::diag::Inheritance());
 
         for (auto it = RD->bases_begin(); it != RD->bases_end(); ++it)
         {
@@ -384,16 +384,16 @@ bool OrthodoxyASTConsumer::Private::ASTVisitor::VisitCXXRecordDecl(const clang::
             if ((!config.Access || !config.InheritanceAccess) &&
                 BS.getAccessSpecifierAsWritten() != clang::AS_none)
             {
-                priv->Report(BS.getBeginLoc(), Orthodoxy::diag::InheritanceAccess);
+                priv->Report(BS.getBeginLoc(), Orthodoxy::diag::InheritanceAccess());
             }
         }
 
         if (!config.NonStandardLayout && !RD->isStandardLayout())
-            priv->Report(RD->getBeginLoc(), Orthodoxy::diag::NonStandardLayout);
+            priv->Report(RD->getBeginLoc(), Orthodoxy::diag::NonStandardLayout());
         else if (!config.NonTrivial && !RD->isTrivial())
-            priv->Report(RD->getBeginLoc(), Orthodoxy::diag::NonTrivial);
+            priv->Report(RD->getBeginLoc(), Orthodoxy::diag::NonTrivial());
         else if (!config.NonPOD && !RD->isPOD())
-            priv->Report(RD->getBeginLoc(), Orthodoxy::diag::NonPOD);
+            priv->Report(RD->getBeginLoc(), Orthodoxy::diag::NonPOD());
     }
 
     return true;
@@ -408,13 +408,13 @@ bool OrthodoxyASTConsumer::Private::ASTVisitor::VisitCXXMethodDecl(const clang::
     if (!MD->isImplicit())
     {
         if (!config.Constructor && llvm::isa<clang::CXXConstructorDecl>(MD))
-            priv->Report(MD->getLocation(), Orthodoxy::diag::Constructor);
+            priv->Report(MD->getLocation(), Orthodoxy::diag::Constructor());
         else if (!config.Destructor && llvm::isa<clang::CXXDestructorDecl>(MD))
-            priv->Report(MD->getLocation(), Orthodoxy::diag::Destructor);
+            priv->Report(MD->getLocation(), Orthodoxy::diag::Destructor());
         else if (!config.VirtualMemberFunction && MD->isVirtual())
-            priv->Report(MD->getLocation(), Orthodoxy::diag::VirtualMemberFunction);
+            priv->Report(MD->getLocation(), Orthodoxy::diag::VirtualMemberFunction());
         else if (!config.MemberFunction)
-            priv->Report(MD->getLocation(), Orthodoxy::diag::MemberFunction);
+            priv->Report(MD->getLocation(), Orthodoxy::diag::MemberFunction());
     }
 
     return true;
@@ -427,7 +427,7 @@ bool OrthodoxyASTConsumer::Private::ASTVisitor::VisitCXXThrowExpr(const clang::C
     OrthodoxyConfig &config = CM.GetConfigForExpr(TE);
 
     if (!config.Throw || !config.Exception)
-        priv->Report(TE->getExprLoc(), Orthodoxy::diag::Throw);
+        priv->Report(TE->getExprLoc(), Orthodoxy::diag::Throw());
 
     return true;
 }
@@ -439,7 +439,7 @@ bool OrthodoxyASTConsumer::Private::ASTVisitor::VisitCXXTryStmt(const clang::CXX
     OrthodoxyConfig &config = CM.GetConfigForStmt(TS);
 
     if (!config.TryCatch || !config.Exception)
-        priv->Report(TS->getBeginLoc(), Orthodoxy::diag::TryCatch);
+        priv->Report(TS->getBeginLoc(), Orthodoxy::diag::TryCatch());
 
     return true;
 }
@@ -451,15 +451,15 @@ bool OrthodoxyASTConsumer::Private::ASTVisitor::VisitCXXNamedCastExpr(const clan
     OrthodoxyConfig &config = CM.GetConfigForExpr(CE);
 
     if ((!config.DynamicCast || !config.NamedCast) && llvm::isa<clang::CXXDynamicCastExpr>(CE))
-        priv->Report(CE->getExprLoc(), Orthodoxy::diag::DynamicCast);
+        priv->Report(CE->getExprLoc(), Orthodoxy::diag::DynamicCast());
     else if ((!config.StaticCast || !config.NamedCast) && llvm::isa<clang::CXXStaticCastExpr>(CE))
-        priv->Report(CE->getExprLoc(), Orthodoxy::diag::StaticCast);
+        priv->Report(CE->getExprLoc(), Orthodoxy::diag::StaticCast());
     else if ((!config.ConstCast || !config.NamedCast) && llvm::isa<clang::CXXConstCastExpr>(CE))
-        priv->Report(CE->getExprLoc(), Orthodoxy::diag::ConstCast);
+        priv->Report(CE->getExprLoc(), Orthodoxy::diag::ConstCast());
     else if ((!config.ReinterpretCast || !config.NamedCast) && llvm::isa<clang::CXXReinterpretCastExpr>(CE))
-        priv->Report(CE->getExprLoc(), Orthodoxy::diag::ReinterpretCast);
+        priv->Report(CE->getExprLoc(), Orthodoxy::diag::ReinterpretCast());
     else if (!config.NamedCast)
-        priv->Report(CE->getExprLoc(), Orthodoxy::diag::NamedCast);
+        priv->Report(CE->getExprLoc(), Orthodoxy::diag::NamedCast());
 
     return true;
 }
@@ -471,7 +471,7 @@ bool OrthodoxyASTConsumer::Private::ASTVisitor::VisitCXXThisExpr(const clang::CX
     OrthodoxyConfig &config = CM.GetConfigForExpr(TE);
 
     if (!config.ImplicitThis && TE->isImplicitCXXThis())
-        priv->Report(TE->getExprLoc(), Orthodoxy::diag::ImplicitThis);
+        priv->Report(TE->getExprLoc(), Orthodoxy::diag::ImplicitThis());
 
     return true;
 }
@@ -483,7 +483,7 @@ bool OrthodoxyASTConsumer::Private::ASTVisitor::VisitCXXNewExpr(const clang::CXX
     OrthodoxyConfig &config = CM.GetConfigForExpr(NE);
 
     if (!config.New)
-        priv->Report(NE->getExprLoc(), Orthodoxy::diag::New);
+        priv->Report(NE->getExprLoc(), Orthodoxy::diag::New());
 
     return true;
 }
@@ -495,7 +495,7 @@ bool OrthodoxyASTConsumer::Private::ASTVisitor::VisitCXXDeleteExpr(const clang::
     OrthodoxyConfig &config = CM.GetConfigForExpr(DE);
 
     if (!config.New)
-        priv->Report(DE->getExprLoc(), Orthodoxy::diag::New);
+        priv->Report(DE->getExprLoc(), Orthodoxy::diag::New());
 
     return true;
 }
@@ -507,7 +507,7 @@ bool OrthodoxyASTConsumer::Private::ASTVisitor::VisitCXXForRangeStmt(const clang
     OrthodoxyConfig &config = CM.GetConfigForStmt(FS);
 
     if (!config.RangeBasedLoop)
-        priv->Report(FS->getBeginLoc(), Orthodoxy::diag::RangeBasedLoop);
+        priv->Report(FS->getBeginLoc(), Orthodoxy::diag::RangeBasedLoop());
 
     return true;
 }
@@ -564,7 +564,7 @@ void OrthodoxyASTConsumer::Private::PPHooks::InclusionDirective(
         if (!accept)
         {
             priv->M_DE = &priv->M_CI->getPreprocessor().getDiagnostics();
-            priv->Report(HashLoc, Orthodoxy::diag::Include);
+            priv->Report(HashLoc, Orthodoxy::diag::Include());
             priv->M_DE = nullptr;
         }
     }

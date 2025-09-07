@@ -7,7 +7,7 @@
 namespace Orthodoxy::diag {
 
 #define DEFINE_DIAGNOSTIC(id, alt, msg) \
-        extern const OrthodoxyDiagDesc id;
+        const OrthodoxyDiagDesc &id();
 
 #include "diag.inc"
 #undef DEFINE_DIAGNOSTIC
