@@ -291,8 +291,8 @@ bool OrthodoxyASTConsumer::Private::ASTVisitor::VisitVarDecl(const clang::VarDec
         priv->Report(VD->getLocation(), Orthodoxy::diag::AutoVariable);
     else if ((!config.Reference || !config.RValueReference) && Orthodoxy::TypeIsRvalueReference(VD->getType()))
         priv->Report(VD->getLocation(), Orthodoxy::diag::RValueReference);
-    else if (!config.Reference && Orthodoxy::TypeIsReference(VD->getType()))
-        priv->Report(VD->getLocation(), Orthodoxy::diag::Reference);
+    else if ((!config.Reference || !config.LValueReference) && Orthodoxy::TypeIsLvalueReference(VD->getType()))
+        priv->Report(VD->getLocation(), Orthodoxy::diag::LValueReference);
 
     return true;
 }
@@ -305,8 +305,10 @@ bool OrthodoxyASTConsumer::Private::ASTVisitor::VisitFieldDecl(const clang::Fiel
 
     if ((!config.Reference || !config.RValueReference) && Orthodoxy::TypeIsRvalueReference(FD->getType()))
         priv->Report(FD->getLocation(), Orthodoxy::diag::RValueReference);
-    else if (!config.Reference && Orthodoxy::TypeIsReference(FD->getType()))
-        priv->Report(FD->getLocation(), Orthodoxy::diag::Reference);
+    else if ((!config.Reference || !config.RValueReference) && Orthodoxy::TypeIsRvalueReference(FD->getType()))
+        priv->Report(FD->getLocation(), Orthodoxy::diag::RValueReference);
+    else if ((!config.Reference || !config.LValueReference) && Orthodoxy::TypeIsLvalueReference(FD->getType()))
+        priv->Report(FD->getLocation(), Orthodoxy::diag::LValueReference);
 
     return true;
 }

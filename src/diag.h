@@ -166,6 +166,11 @@ DEFINE_DIAGNOSTIC(
     "r-value references are not allowed");
 
 DEFINE_DIAGNOSTIC(
+    LValueReference,
+    lvalue-reference,
+    "l-value references are not allowed");
+
+DEFINE_DIAGNOSTIC(
     ModuleImport,
     module-import,
     "importing modules is not allowed");

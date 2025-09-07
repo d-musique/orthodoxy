@@ -53,6 +53,7 @@ struct OrthodoxyConfig
     bool ConversionOverload = true;
     bool Reference = true;
     bool RValueReference = true;
+    bool LValueReference = true;
     bool Lambda = true;
     bool LambdaCapture = true;
     bool New = true;

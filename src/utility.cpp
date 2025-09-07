@@ -17,17 +17,16 @@ llvm::raw_ostream &Orthodoxy::warning_message()
     return llvm::errs() << "orthodoxy WARNING: ";
 }
 
-bool Orthodoxy::TypeIsReference(clang::QualType qty)
+bool Orthodoxy::TypeIsLvalueReference(clang::QualType qty)
 {
-    return TypeIsReference(qty.getTypePtrOrNull());
+    return TypeIsLvalueReference(qty.getTypePtrOrNull());
 }
 
-bool Orthodoxy::TypeIsReference(const clang::Type *ty)
+bool Orthodoxy::TypeIsLvalueReference(const clang::Type *ty)
 {
     if (!ty) return false;
     clang::Type::TypeClass tc = ty->getTypeClass();
-    return tc == clang::Type::TypeClass::LValueReference ||
-        tc == clang::Type::TypeClass::RValueReference;
+    return tc == clang::Type::TypeClass::LValueReference;
 }
 
 bool Orthodoxy::TypeIsRvalueReference(clang::QualType qty)

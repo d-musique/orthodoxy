@@ -14,8 +14,8 @@ namespace Orthodoxy {
 llvm::raw_ostream &error_message();
 llvm::raw_ostream &warning_message();
 
-bool TypeIsReference(clang::QualType qty);
-bool TypeIsReference(const clang::Type *ty);
+bool TypeIsLvalueReference(clang::QualType qty);
+bool TypeIsLvalueReference(const clang::Type *ty);
 bool TypeIsRvalueReference(clang::QualType qty);
 bool TypeIsRvalueReference(const clang::Type *ty);
 bool TypeIsAuto(clang::QualType qty);
