@@ -24,4 +24,8 @@ bool TypeIsAuto(const clang::Type *ty);
 bool TagIsClass(const clang::TagDecl *TD);
 bool TagIsEnumClass(const clang::TagDecl *TD);
 
+bool FunctionIsCopyConstructor(const clang::FunctionDecl *FD);
+bool FunctionIsMoveConstructor(const clang::FunctionDecl *FD);
+bool FunctionIsImplicitConversionConstructor(const clang::FunctionDecl *FD);
+
 } // namespace Orthodoxy

@@ -410,7 +410,13 @@ bool OrthodoxyASTConsumer::Private::ASTVisitor::VisitCXXMethodDecl(const clang::
 
     if (!MD->isImplicit())
     {
-        if (!config.Constructor && llvm::isa<clang::CXXConstructorDecl>(MD))
+        if ((!config.Constructor || !config.CopyConstructor) && Orthodoxy::FunctionIsCopyConstructor(MD))
+            priv->Report(MD->getLocation(), Orthodoxy::diag::CopyConstructor());
+        else if ((!config.Constructor || !config.MoveConstructor) && Orthodoxy::FunctionIsMoveConstructor(MD))
+            priv->Report(MD->getLocation(), Orthodoxy::diag::MoveConstructor());
+        else if ((!config.Constructor || !config.ConversionConstructor) && Orthodoxy::FunctionIsImplicitConversionConstructor(MD))
+            priv->Report(MD->getLocation(), Orthodoxy::diag::ConversionConstructor());
+        else if (!config.Constructor && llvm::isa<clang::CXXConstructorDecl>(MD))
             priv->Report(MD->getLocation(), Orthodoxy::diag::Constructor());
         else if (!config.Destructor && llvm::isa<clang::CXXDestructorDecl>(MD))
             priv->Report(MD->getLocation(), Orthodoxy::diag::Destructor());

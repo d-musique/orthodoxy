@@ -22,6 +22,9 @@ struct OrthodoxyConfig
     bool NonTrivial = true;
     bool NonStandardLayout = true;
     bool Constructor = true;
+    bool CopyConstructor = true;
+    bool MoveConstructor = true;
+    bool ConversionConstructor = true;
     bool Destructor = true;
     bool Inheritance = true;
     bool VirtualInheritance = true;

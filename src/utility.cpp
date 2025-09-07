@@ -4,6 +4,7 @@
 #include "utility.h"
 BEFORE_LLVM
 #include <clang/AST/Decl.h>
+#include <clang/AST/DeclCXX.h>
 #include <clang/Basic/Version.h>
 AFTER_LLVM
 
@@ -64,4 +65,22 @@ bool Orthodoxy::TagIsClass(const clang::TagDecl *TD)
 bool Orthodoxy::TagIsEnumClass(const clang::TagDecl *TD)
 {
     return TD->isEnum() && llvm::cast<clang::EnumDecl>(TD)->isScoped();
+}
+
+bool Orthodoxy::FunctionIsCopyConstructor(const clang::FunctionDecl *FD)
+{
+    const clang::CXXConstructorDecl *ctor = llvm::dyn_cast<clang::CXXConstructorDecl>(FD);
+    return ctor && ctor->isCopyConstructor();
+}
+
+bool Orthodoxy::FunctionIsMoveConstructor(const clang::FunctionDecl *FD)
+{
+    const clang::CXXConstructorDecl *ctor = llvm::dyn_cast<clang::CXXConstructorDecl>(FD);
+    return ctor && ctor->isMoveConstructor();
+}
+
+bool Orthodoxy::FunctionIsImplicitConversionConstructor(const clang::FunctionDecl *FD)
+{
+    const clang::CXXConstructorDecl *ctor = llvm::dyn_cast<clang::CXXConstructorDecl>(FD);
+    return ctor && !ctor->isCopyOrMoveConstructor() && ctor->isConvertingConstructor(false);
 }

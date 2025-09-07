@@ -30,6 +30,9 @@ void yaml::MappingTraits<OrthodoxyConfig>::mapping(yaml::IO &io, OrthodoxyConfig
     io.mapOptional("NonPOD", info.NonPOD);
     io.mapOptional("EnumClass", info.EnumClass);
     io.mapOptional("Constructor", info.Constructor);
+    io.mapOptional("CopyConstructor", info.CopyConstructor);
+    io.mapOptional("MoveConstructor", info.MoveConstructor);
+    io.mapOptional("ConversionConstructor", info.ConversionConstructor);
     io.mapOptional("Destructor", info.Destructor);
     io.mapOptional("Inheritance", info.Inheritance);
     io.mapOptional("VirtualInheritance", info.VirtualInheritance);

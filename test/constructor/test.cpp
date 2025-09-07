@@ -4,5 +4,9 @@
 class MyClass
 {
     MyClass(); // EXPECT(constructor)
+    MyClass(const MyClass &); // EXPECT(copy-constructor)
+    MyClass(MyClass &&); // EXPECT(move-constructor)
+    MyClass(int); // EXPECT(conversion-constructor)
+    explicit MyClass(float); // EXPECT(constructor)
     ~MyClass();
 };

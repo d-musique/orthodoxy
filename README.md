@@ -116,6 +116,9 @@ helper scripts.**
     - [x] `NonTrivial (bool)` non-trivial structures
     - [x] `NonStandardLayout (bool)` non-standard-layout structures
 - [x] `Constructor (bool)` constructors
+    - [x] `CopyConstructor (bool)` copy constructors
+    - [x] `MoveConstructor (bool)` move constructors
+    - [x] `ConversionConstructor (bool)` implicit constructors other than move and copy
 - [x] `Destructor (bool)` destructors
 - [x] `Inheritance (bool)` inheritance, both virtual and non-virtual
     - [x] `VirtualInheritance (bool)` virtual inheritance

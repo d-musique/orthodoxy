@@ -38,6 +38,18 @@ DEFINE_DIAGNOSTIC(
     "constructors are not allowed");
 
 DEFINE_DIAGNOSTIC(
+    CopyConstructor, "copy-constructor", &Constructor(),
+    "copy constructors are not allowed");
+
+DEFINE_DIAGNOSTIC(
+    MoveConstructor, "move-constructor", &Constructor(),
+    "move constructors are not allowed");
+
+DEFINE_DIAGNOSTIC(
+    ConversionConstructor, "conversion-constructor", &Constructor(),
+    "conversion constructors are not allowed");
+
+DEFINE_DIAGNOSTIC(
     Destructor, "destructor", nullptr,
     "destructors are not allowed");
 
