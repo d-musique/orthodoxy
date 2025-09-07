@@ -113,47 +113,47 @@ helper scripts.**
 - [x] `IncludeAllow (list[string])` patterns of allowed system headers
 - [x] `Class (bool)` structures declared with the `class` keyword
 - [x] `NonPOD (bool)` non-POD structures
-- [x] `NonTrivial (bool)` non-trivial structures
-- [x] `NonStandardLayout (bool)` non-standard-layout structures
+    - [x] `NonTrivial (bool)` non-trivial structures
+    - [x] `NonStandardLayout (bool)` non-standard-layout structures
 - [x] `Constructor (bool)` constructors
 - [x] `Destructor (bool)` destructors
 - [x] `Inheritance (bool)` inheritance, both virtual and non-virtual
-- [x] `VirtualInheritance (bool)` virtual inheritance
+    - [x] `VirtualInheritance (bool)` virtual inheritance
 - [x] `MemberFunction (bool)` member functions
-- [x] `VirtualMemberFunction (bool)` virtual member functions
+    - [x] `VirtualMemberFunction (bool)` virtual member functions
 - [x] `EnumClass (bool)` enum classes
 - [x] `Access (bool)` member or inheritance access specifier
-- [x] `MemberAccess (bool)` member access specifier
-- [x] `InheritanceAccess (bool)` inheritance access specifier
+    - [x] `MemberAccess (bool)` member access specifier
+    - [x] `InheritanceAccess (bool)` inheritance access specifier
 - [x] `ImplicitThis (bool)` member access without an explicit `this`
 - [x] `CStyleCast (bool)` C-style casts
 - [x] `NamedCast (bool)` all C++-style named casts
-- [x] `DynamicCast (bool)` dynamic casts 
-- [x] `StaticCast (bool)` static casts
-- [x] `ConstCast (bool)` const casts
-- [x] `ReinterpretCast (bool)` reinterpret casts
+    - [x] `DynamicCast (bool)` dynamic casts 
+    - [x] `StaticCast (bool)` static casts
+    - [x] `ConstCast (bool)` const casts
+    - [x] `ReinterpretCast (bool)` reinterpret casts
 - [x] `Overload (bool)` overloading, both function and operator
-- [x] `FunctionOverload (bool)` function overloading
-- [x] `OperatorOverload (bool)` operator overloading
-- [x] `ConversionOverload (bool)` conversion operator overloading
+    - [x] `FunctionOverload (bool)` function overloading
+    - [x] `OperatorOverload (bool)` operator overloading
+    - [x] `ConversionOverload (bool)` conversion operator overloading
 - [x] `Reference (bool)` references of all kinds
-- [x] `RvalueReference (bool)` r-value references
-- [x] `LvalueReference (bool)` l-value references
+    - [x] `RvalueReference (bool)` r-value references
+    - [x] `LvalueReference (bool)` l-value references
 - [x] `Exception (bool)` all exception handling
-- [x] `Throw (bool)` exception throwing
-- [x] `TryCatch (bool)` exception catching
+    - [x] `Throw (bool)` exception throwing
+    - [x] `TryCatch (bool)` exception catching
 - [x] `Template (bool)` templates
-- [x] `Concept (bool)` concepts
+    - [x] `Concept (bool)` concepts
 - [x] `Module (bool)` modules
-- [x] `ModuleImport (bool)` importing modules
-- [x] `ModuleExport (bool)` exporting modules
+    - [x] `ModuleImport (bool)` importing modules
+    - [x] `ModuleExport (bool)` exporting modules
 - [x] `RangeBasedLoop (bool)` range-based loop
 - [x] `Lambda (bool)` lambda functions
-- [x] `LambdaCapture (bool)` capturing lambda functions
+    - [x] `LambdaCapture (bool)` capturing lambda functions
 - [x] `New (bool)` `new` and `delete`
 - [x] `Auto (bool)` declarations with automatic type
-- [x] `AutoReturn (bool)` function declarations with automatic return type
-- [x] `AutoVariable (bool)` variable declarations with automatic type
+    - [x] `AutoReturn (bool)` function declarations with automatic return type
+    - [x] `AutoVariable (bool)` variable declarations with automatic type
 - [x] `UserDefinedLiteral (bool)` user-defined literals
 - [x] `DefaultArgument (bool)` default arguments
 - [x] `Namespace (bool)` namespaces
