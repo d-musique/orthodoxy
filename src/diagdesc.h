@@ -11,37 +11,44 @@ AFTER_LLVM
 #define USE_CLANG_DIAG_DESC
 #endif
 
+class OrthodoxyAbstractDiagDesc
+{
+public:
+    OrthodoxyAbstractDiagDesc(
+        llvm::StringRef id, llvm::StringRef alt,
+        const OrthodoxyAbstractDiagDesc *super)
+        : M_ID(id), M_ALT(alt), M_super(super) {}
+    virtual ~OrthodoxyAbstractDiagDesc()
+        {}
+    llvm::StringRef GetOrthodoxyID() const
+        { return M_ID; }
+    llvm::StringRef GetOrthodoxyALT() const
+        { return M_ALT; }
+    const OrthodoxyAbstractDiagDesc *GetSuper() const
+        { return M_super; }
+
+protected:
+    llvm::StringRef M_ID;
+    llvm::StringRef M_ALT;
+    const OrthodoxyAbstractDiagDesc *M_super;
+};
+
 class OrthodoxyDiagDesc
 #if defined(USE_CLANG_DIAG_DESC)
-    : public clang::DiagnosticIDs::CustomDiagDesc
+    : public clang::DiagnosticIDs::CustomDiagDesc,
+      public OrthodoxyAbstractDiagDesc
 #endif
 {
 public:
     OrthodoxyDiagDesc(
-        llvm::StringRef orthodoxyID,
-        llvm::StringRef orthodoxyALT,
-        llvm::StringRef Description);
-
-    llvm::StringRef GetOrthodoxyID() const
-    {
-        return M_ID;
-    }
-
-    llvm::StringRef GetOrthodoxyALT() const
-    {
-        return M_ALT;
-    }
+        llvm::StringRef orthodoxyID, llvm::StringRef orthodoxyALT,
+        const OrthodoxyAbstractDiagDesc *super, llvm::StringRef Description);
 
 #if !defined(USE_CLANG_DIAG_DESC)
-    llvm::StringRef GetDescription() const
-    {
-        return M_Description;
-    }
+    llvm::StringRef GetDescription() const { return M_Description; }
 #endif
 
 private:
-    llvm::StringRef M_ID;
-    llvm::StringRef M_ALT;
 #if !defined(USE_CLANG_DIAG_DESC)
     llvm::StringRef M_Description;
 #endif

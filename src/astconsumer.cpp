@@ -85,8 +85,8 @@ struct OrthodoxyASTConsumer::Private
     llvm::GlobPattern *GetCachedGlobOrNull(llvm::StringRef pattern);
     //
     std::optional<clang::DiagnosticBuilder> Report(clang::SourceLocation loc, const OrthodoxyDiagDesc &diag);
-    bool IsSuppressedLocation(clang::SourceLocation loc, llvm::ArrayRef<llvm::StringRef> ids);
-    static bool LineHasSuppressionComment(llvm::StringRef data, unsigned offset, llvm::ArrayRef<llvm::StringRef> ids);
+    bool IsSuppressedLocation(clang::SourceLocation loc, const OrthodoxyDiagDesc &diag);
+    static bool LineHasSuppressionComment(llvm::StringRef data, unsigned offset, const OrthodoxyDiagDesc &diag);
 };
 
 OrthodoxyASTConsumer::OrthodoxyASTConsumer(clang::CompilerInstance &CI, bool warnOnly)
@@ -516,8 +516,7 @@ std::optional<clang::DiagnosticBuilder> OrthodoxyASTConsumer::Private::Report(cl
 {
     clang::DiagnosticsEngine &DE = *M_DE;
 
-    llvm::StringRef IDs[] = {diag.GetOrthodoxyID(), diag.GetOrthodoxyALT()};
-    if (IsSuppressedLocation(loc, IDs)) return {};
+    if (IsSuppressedLocation(loc, diag)) return {};
 
 #if defined(USE_CLANG_DIAG_DESC)
     unsigned diagID = DE.getDiagnosticIDs()->getCustomDiagID(diag);
@@ -570,7 +569,7 @@ void OrthodoxyASTConsumer::Private::PPHooks::InclusionDirective(
     }
 }
 
-bool OrthodoxyASTConsumer::Private::IsSuppressedLocation(clang::SourceLocation mainLoc, llvm::ArrayRef<llvm::StringRef> ids)
+bool OrthodoxyASTConsumer::Private::IsSuppressedLocation(clang::SourceLocation mainLoc, const OrthodoxyDiagDesc &diag)
 {
     clang::CompilerInstance &CI = *M_CI;
     clang::SourceManager &SM = CI.getSourceManager();
@@ -595,7 +594,7 @@ bool OrthodoxyASTConsumer::Private::IsSuppressedLocation(clang::SourceLocation m
             if (invalid) continue;
 
             unsigned offset = SM.getFileOffset(fileLoc);
-            if (LineHasSuppressionComment(data, offset, ids))
+            if (LineHasSuppressionComment(data, offset, diag))
                 return true;
         }
 
@@ -610,7 +609,7 @@ bool OrthodoxyASTConsumer::Private::IsSuppressedLocation(clang::SourceLocation m
     return false;
 }
 
-bool OrthodoxyASTConsumer::Private::LineHasSuppressionComment(llvm::StringRef data, unsigned offset, llvm::ArrayRef<llvm::StringRef> ids)
+bool OrthodoxyASTConsumer::Private::LineHasSuppressionComment(llvm::StringRef data, unsigned offset, const OrthodoxyDiagDesc &diag)
 {
     llvm::SmallString<64> pattern;
     unsigned start = offset;
@@ -623,10 +622,15 @@ bool OrthodoxyASTConsumer::Private::LineHasSuppressionComment(llvm::StringRef da
         ++end;
 
     llvm::StringRef line{data.data() + start, end - start};
-    for (llvm::StringRef id : ids)
+
+    const OrthodoxyAbstractDiagDesc *curr = &diag;
+    while (curr)
     {
-        pattern = {"HERESY(", id, ")"};
+        pattern = {"HERESY(", curr->GetOrthodoxyID(), ")"};
         if (line.contains(pattern)) return true;
+        pattern = {"HERESY(", curr->GetOrthodoxyALT(), ")"};
+        if (line.contains(pattern)) return true;
+        curr = curr->GetSuper();
     }
 
     return false;

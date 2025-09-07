@@ -6,10 +6,14 @@
 
 namespace Orthodoxy::diag {
 
-#define DEFINE_DIAGNOSTIC(id, alt, msg) \
+#define DEFINE_DIAGNOSTIC(id, alt, super, msg) \
         const OrthodoxyDiagDesc &id();
+
+#define DEFINE_ABSTRACT_DIAGNOSTIC(id, alt, super) \
+        const OrthodoxyAbstractDiagDesc &id();
 
 #include "diag.inc"
 #undef DEFINE_DIAGNOSTIC
+#undef DEFINE_ABSTRACT_DIAGNOSTIC
 
 } // namespace Orthodoxy::diag

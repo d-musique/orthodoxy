@@ -4,15 +4,14 @@
 #include "diagdesc.h"
 
 OrthodoxyDiagDesc::OrthodoxyDiagDesc(
-    llvm::StringRef orthodoxyID,
-    llvm::StringRef orthodoxyALT,
-    llvm::StringRef Description)
+    llvm::StringRef orthodoxyID, llvm::StringRef orthodoxyALT,
+    const OrthodoxyAbstractDiagDesc *super, llvm::StringRef Description)
     :
 #if defined(USE_CLANG_DIAG_DESC)
     clang::DiagnosticIDs::CustomDiagDesc{
         clang::diag::Severity::Error, std::string{Description}},
 #endif
-      M_ID{orthodoxyID}, M_ALT{orthodoxyALT}
+    OrthodoxyAbstractDiagDesc{orthodoxyID, orthodoxyALT, super}
 #if !defined(USE_CLANG_DIAG_DESC)
     , M_Description{Description}
 #endif
