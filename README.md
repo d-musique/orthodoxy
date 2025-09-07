@@ -138,6 +138,9 @@ helper scripts.**
 - [x] `Overload (bool)` overloading, both function and operator
     - [x] `FunctionOverload (bool)` function overloading
     - [x] `OperatorOverload (bool)` operator overloading
+        - [x] `AssignmentOperator (bool)` assignment operator
+            - [x] `CopyAssignmentOperator (bool)` copy assignment operator
+            - [x] `MoveAssignmentOperator (bool)` move assignment operator
     - [x] `ConversionOverload (bool)` conversion operator overloading
 - [x] `Reference (bool)` references of all kinds
     - [x] `RvalueReference (bool)` r-value references

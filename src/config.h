@@ -53,6 +53,9 @@ struct OrthodoxyConfig
     bool Overload = true;
     bool FunctionOverload = true;
     bool OperatorOverload = true;
+    bool AssignmentOperator = true;
+    bool CopyAssignmentOperator = true;
+    bool MoveAssignmentOperator = true;
     bool ConversionOverload = true;
     bool Reference = true;
     bool RValueReference = true;

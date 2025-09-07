@@ -132,6 +132,18 @@ DEFINE_DIAGNOSTIC(
     "operator overloading is not allowed");
 
 DEFINE_DIAGNOSTIC(
+    AssignmentOperator, "assignment-operator", &OperatorOverload(),
+    "assignment operators are not allowed");
+
+DEFINE_DIAGNOSTIC(
+    CopyAssignmentOperator, "copy-assignment-operator", &AssignmentOperator(),
+    "copy assignment operators are not allowed");
+
+DEFINE_DIAGNOSTIC(
+    MoveAssignmentOperator, "move-assignment-operator", &AssignmentOperator(),
+    "move assignment operators are not allowed");
+
+DEFINE_DIAGNOSTIC(
     ConversionOverload, "conversion-overload", &Overload(),
     "conversion operator overloading is not allowed");
 

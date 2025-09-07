@@ -253,7 +253,22 @@ bool OrthodoxyASTConsumer::Private::ASTVisitor::VisitFunctionDecl(const clang::F
     OrthodoxyConfigManager &CM = *priv->M_CM;
     OrthodoxyConfig &config = CM.GetConfigForDecl(FD);
 
-    if ((!config.Overload || !config.OperatorOverload) && FD->isOverloadedOperator())
+    if ((!config.Overload || !config.OperatorOverload || !config.AssignmentOperator || !config.CopyAssignmentOperator)
+        && Orthodoxy::FunctionIsCopyAssignmentOperator(FD))
+    {
+        priv->Report(FD->getLocation(), Orthodoxy::diag::CopyAssignmentOperator());
+    }
+    else if ((!config.Overload || !config.OperatorOverload || !config.AssignmentOperator || !config.MoveAssignmentOperator)
+        && Orthodoxy::FunctionIsMoveAssignmentOperator(FD))
+    {
+        priv->Report(FD->getLocation(), Orthodoxy::diag::MoveAssignmentOperator());
+    }
+    else if ((!config.Overload || !config.OperatorOverload || !config.AssignmentOperator)
+        && Orthodoxy::FunctionIsAssignmentOperator(FD))
+    {
+        priv->Report(FD->getLocation(), Orthodoxy::diag::AssignmentOperator());
+    }
+    else if ((!config.Overload || !config.OperatorOverload) && FD->isOverloadedOperator())
         priv->Report(FD->getLocation(), Orthodoxy::diag::OperatorOverload());
     else if ((!config.Overload || !config.ConversionOverload) && llvm::isa<clang::CXXConversionDecl>(FD))
         priv->Report(FD->getLocation(), Orthodoxy::diag::ConversionOverload());

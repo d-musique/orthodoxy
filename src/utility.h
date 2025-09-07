@@ -27,6 +27,9 @@ bool TagIsEnumClass(const clang::TagDecl *TD);
 bool FunctionIsCopyConstructor(const clang::FunctionDecl *FD);
 bool FunctionIsMoveConstructor(const clang::FunctionDecl *FD);
 bool FunctionIsImplicitConversionConstructor(const clang::FunctionDecl *FD);
+bool FunctionIsAssignmentOperator(const clang::FunctionDecl *FD);
+bool FunctionIsCopyAssignmentOperator(const clang::FunctionDecl *FD);
+bool FunctionIsMoveAssignmentOperator(const clang::FunctionDecl *FD);
 
 unsigned int NamespaceDepth(const clang::NamespaceDecl *ND, bool countAnonymous);
 

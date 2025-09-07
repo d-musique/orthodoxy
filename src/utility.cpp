@@ -85,6 +85,23 @@ bool Orthodoxy::FunctionIsImplicitConversionConstructor(const clang::FunctionDec
     return ctor && !ctor->isCopyOrMoveConstructor() && ctor->isConvertingConstructor(false);
 }
 
+bool Orthodoxy::FunctionIsAssignmentOperator(const clang::FunctionDecl *FD)
+{
+    return FD->getOverloadedOperator() == clang::OO_Equal;
+}
+
+bool Orthodoxy::FunctionIsCopyAssignmentOperator(const clang::FunctionDecl *FD)
+{
+    const clang::CXXMethodDecl *MD = llvm::dyn_cast<clang::CXXMethodDecl>(FD);
+    return MD ? MD->isCopyAssignmentOperator() : false;
+}
+
+bool Orthodoxy::FunctionIsMoveAssignmentOperator(const clang::FunctionDecl *FD)
+{
+    const clang::CXXMethodDecl *MD = llvm::dyn_cast<clang::CXXMethodDecl>(FD);
+    return MD ? MD->isMoveAssignmentOperator() : false;
+}
+
 unsigned int Orthodoxy::NamespaceDepth(const clang::NamespaceDecl *ND, bool countAnonymous)
 {
     unsigned int depth =

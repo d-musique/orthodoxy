@@ -60,6 +60,9 @@ void yaml::MappingTraits<OrthodoxyConfig>::mapping(yaml::IO &io, OrthodoxyConfig
     io.mapOptional("Overload", info.Overload);
     io.mapOptional("FunctionOverload", info.FunctionOverload);
     io.mapOptional("OperatorOverload", info.OperatorOverload);
+    io.mapOptional("AssignmentOperator", info.AssignmentOperator);
+    io.mapOptional("CopyAssignmentOperator", info.CopyAssignmentOperator);
+    io.mapOptional("MoveAssignmentOperator", info.MoveAssignmentOperator);
     io.mapOptional("ConversionOverload", info.ConversionOverload);
     io.mapOptional("Reference", info.Reference);
     io.mapOptional("RValueReference", info.RValueReference);
