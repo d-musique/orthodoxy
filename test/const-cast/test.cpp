@@ -29,3 +29,8 @@ A *testConst(const A *x)
 {
     return const_cast<A *>(x); // EXPECT(const-cast)
 }
+
+B *testReinterpret(A *x)
+{
+    return reinterpret_cast<B *>(x);
+}

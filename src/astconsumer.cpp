@@ -454,6 +454,8 @@ bool OrthodoxyASTConsumer::Private::ASTVisitor::VisitCXXNamedCastExpr(const clan
         priv->Report(CE->getExprLoc(), Orthodoxy::diag::StaticCast);
     else if ((!config.ConstCast || !config.NamedCast) && llvm::isa<clang::CXXConstCastExpr>(CE))
         priv->Report(CE->getExprLoc(), Orthodoxy::diag::ConstCast);
+    else if ((!config.ReinterpretCast || !config.NamedCast) && llvm::isa<clang::CXXReinterpretCastExpr>(CE))
+        priv->Report(CE->getExprLoc(), Orthodoxy::diag::ReinterpretCast);
     else if (!config.NamedCast)
         priv->Report(CE->getExprLoc(), Orthodoxy::diag::NamedCast);
 

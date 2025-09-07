@@ -46,6 +46,7 @@ struct OrthodoxyConfig
     bool DynamicCast = true;
     bool StaticCast = true;
     bool ConstCast = true;
+    bool ReinterpretCast = true;
     bool Overload = true;
     bool FunctionOverload = true;
     bool OperatorOverload = true;

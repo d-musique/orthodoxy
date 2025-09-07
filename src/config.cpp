@@ -53,6 +53,7 @@ void yaml::MappingTraits<OrthodoxyConfig>::mapping(yaml::IO &io, OrthodoxyConfig
     io.mapOptional("DynamicCast", info.DynamicCast);
     io.mapOptional("StaticCast", info.StaticCast);
     io.mapOptional("ConstCast", info.ConstCast);
+    io.mapOptional("ReinterpretCast", info.ReinterpretCast);
     io.mapOptional("Overload", info.Overload);
     io.mapOptional("FunctionOverload", info.FunctionOverload);
     io.mapOptional("OperatorOverload", info.OperatorOverload);

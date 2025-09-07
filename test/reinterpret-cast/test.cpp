@@ -17,17 +17,17 @@ B *testC(A *x)
 
 B *testStatic(A *x)
 {
-    return static_cast<B *>(x); // EXPECT(static-cast)
+    return static_cast<B *>(x);
 }
 
 B *testDynamic(A *x)
 {
-    return dynamic_cast<B *>(x); // EXPECT(dynamic-cast)
+    return dynamic_cast<B *>(x);
 }
 
 A *testConst(const A *x)
 {
-    return const_cast<A *>(x); // EXPECT(const-cast)
+    return const_cast<A *>(x);
 }
 
 B *testReinterpret(A *x)

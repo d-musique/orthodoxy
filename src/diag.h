@@ -136,6 +136,11 @@ DEFINE_DIAGNOSTIC(
     "const casts are not allowed");
 
 DEFINE_DIAGNOSTIC(
+    ReinterpretCast,
+    reinterpret-cast,
+    "reinterpret casts are not allowed");
+
+DEFINE_DIAGNOSTIC(
     FunctionOverload,
     function-overload,
     "function overloading is not allowed");

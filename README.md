@@ -131,6 +131,7 @@ helper scripts.**
 - [x] `DynamicCast (bool)` dynamic casts 
 - [x] `StaticCast (bool)` static casts
 - [x] `ConstCast (bool)` const casts
+- [x] `ReinterpretCast (bool)` reinterpret casts
 - [x] `Overload (bool)` overloading, both function and operator
 - [x] `FunctionOverload (bool)` function overloading
 - [x] `OperatorOverload (bool)` operator overloading
