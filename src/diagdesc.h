@@ -34,10 +34,11 @@ protected:
 };
 
 class OrthodoxyDiagDesc
+    :
 #if defined(USE_CLANG_DIAG_DESC)
-    : public clang::DiagnosticIDs::CustomDiagDesc,
-      public OrthodoxyAbstractDiagDesc
+    public clang::DiagnosticIDs::CustomDiagDesc,
 #endif
+    public OrthodoxyAbstractDiagDesc
 {
 public:
     OrthodoxyDiagDesc(
