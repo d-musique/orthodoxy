@@ -7,7 +7,7 @@
     const OrthodoxyDiagDesc &Orthodoxy::diag::id() \
     { \
         static const OrthodoxyDiagDesc desc \
-            { #id, #alt, msg " [orthodoxy::" #alt "]" }; \
+            { #id, alt, msg " [orthodoxy::" alt "]" }; \
         return desc; \
     }
 

@@ -2,216 +2,173 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 DEFINE_DIAGNOSTIC(
-    Include,
-    include,
+    Include, "include",
     "including this header is not allowed");
 
 DEFINE_DIAGNOSTIC(
-    Class,
-    class,
+    Class, "class",
     "class is not allowed");
 
 DEFINE_DIAGNOSTIC(
-    NonStandardLayout,
-    non-standard-layout,
+    NonStandardLayout, "non-standard-layout",
     "non-standard-layout types are not allowed");
 
 DEFINE_DIAGNOSTIC(
-    NonTrivial,
-    non-trivial,
+    NonTrivial, "non-trivial",
     "non-trivial types are not allowed");
 
 DEFINE_DIAGNOSTIC(
-    NonPOD,
-    non-pod,
+    NonPOD, "non-pod",
     "non-POD types are not allowed");
 
 DEFINE_DIAGNOSTIC(
-    EnumClass,
-    enum-class,
+    EnumClass, "enum-class",
     "enum class is not allowed");
 
 DEFINE_DIAGNOSTIC(
-    MemberFunction,
-    member-function,
+    MemberFunction, "member-function",
     "member functions are not allowed");
 
 DEFINE_DIAGNOSTIC(
-    VirtualMemberFunction,
-    virtual-member-function,
+    VirtualMemberFunction, "virtual-member-function",
     "virtual member functions are not allowed");
 
 DEFINE_DIAGNOSTIC(
-    Constructor,
-    constructor,
+    Constructor, "constructor",
     "constructors are not allowed");
 
 DEFINE_DIAGNOSTIC(
-    Destructor,
-    destructor,
+    Destructor, "destructor",
     "destructors are not allowed");
 
 DEFINE_DIAGNOSTIC(
-    Inheritance,
-    inheritance,
+    Inheritance, "inheritance",
     "inheritance is not allowed");
 
 DEFINE_DIAGNOSTIC(
-    VirtualInheritance,
-    virtual-inheritance,
+    VirtualInheritance, "virtual-inheritance",
     "virtual inheritance is not allowed");
 
 DEFINE_DIAGNOSTIC(
-    Throw,
-    throw,
+    Throw, "throw",
     "throwing is not allowed");
 
 DEFINE_DIAGNOSTIC(
-    TryCatch,
-    try-catch,
+    TryCatch, "try-catch",
     "try/catch blocks are not allowed");
 
 DEFINE_DIAGNOSTIC(
-    Template,
-    template,
+    Template, "template",
     "templates are not allowed");
 
 DEFINE_DIAGNOSTIC(
-    Concept,
-    concept,
+    Concept, "concept",
     "concepts are not allowed");
 
 DEFINE_DIAGNOSTIC(
-    Access,
-    access,
+    Access, "access",
     "access specifiers are not allowed");
 
 DEFINE_DIAGNOSTIC(
-    MemberAccess,
-    member-access,
+    MemberAccess, "member-access",
     "member access specifiers are not allowed");
 
 DEFINE_DIAGNOSTIC(
-    InheritanceAccess,
-    inheritance-access,
+    InheritanceAccess, "inheritance-access",
     "inheritance access specifiers are not allowed");
 
 DEFINE_DIAGNOSTIC(
-    ImplicitThis,
-    implicit-this,
+    ImplicitThis, "implicit-this",
     "implicit this is not allowed");
 
 DEFINE_DIAGNOSTIC(
-    CStyleCast,
-    c-style-cast,
+    CStyleCast, "c-style-cast",
     "C-style casts are not allowed");
 
 DEFINE_DIAGNOSTIC(
-    NamedCast,
-    named-cast,
+    NamedCast, "named-cast",
     "named casts are not allowed");
 
 DEFINE_DIAGNOSTIC(
-    DynamicCast,
-    dynamic-cast,
+    DynamicCast, "dynamic-cast",
     "dynamic casts are not allowed");
 
 DEFINE_DIAGNOSTIC(
-    StaticCast,
-    static-cast,
+    StaticCast, "static-cast",
     "static casts are not allowed");
 
 DEFINE_DIAGNOSTIC(
-    ConstCast,
-    const-cast,
+    ConstCast, "const-cast",
     "const casts are not allowed");
 
 DEFINE_DIAGNOSTIC(
-    ReinterpretCast,
-    reinterpret-cast,
+    ReinterpretCast, "reinterpret-cast",
     "reinterpret casts are not allowed");
 
 DEFINE_DIAGNOSTIC(
-    FunctionOverload,
-    function-overload,
+    FunctionOverload, "function-overload",
     "function overloading is not allowed");
 
 DEFINE_DIAGNOSTIC(
-    OperatorOverload,
-    operator-overload,
+    OperatorOverload, "operator-overload",
     "operator overloading is not allowed");
 
 DEFINE_DIAGNOSTIC(
-    ConversionOverload,
-    conversion-overload,
+    ConversionOverload, "conversion-overload",
     "conversion operator overloading is not allowed");
 
 DEFINE_DIAGNOSTIC(
-    Reference,
-    reference,
+    Reference, "reference",
     "references are not allowed");
 
 DEFINE_DIAGNOSTIC(
-    RValueReference,
-    rvalue-reference,
+    RValueReference, "rvalue-reference",
     "r-value references are not allowed");
 
 DEFINE_DIAGNOSTIC(
-    LValueReference,
-    lvalue-reference,
+    LValueReference, "lvalue-reference",
     "l-value references are not allowed");
 
 DEFINE_DIAGNOSTIC(
-    ModuleImport,
-    module-import,
+    ModuleImport, "module-import",
     "importing modules is not allowed");
 
 DEFINE_DIAGNOSTIC(
-    ModuleExport,
-    module-export,
+    ModuleExport, "module-export",
     "exporting modules is not allowed");
 
 DEFINE_DIAGNOSTIC(
-    RangeBasedLoop,
-    range-based-loop,
+    RangeBasedLoop, "range-based-loop",
     "range-based loops are not allowed");
 
 DEFINE_DIAGNOSTIC(
-    Lambda,
-    lambda,
+    Lambda, "lambda",
     "lambdas are not allowed");
 
 DEFINE_DIAGNOSTIC(
-    LambdaCapture,
-    lambda-capture,
+    LambdaCapture, "lambda-capture",
     "capturing lambdas are not allowed");
 
 DEFINE_DIAGNOSTIC(
-    New,
-    new,
+    New, "new",
     "new/delete is not allowed");
 
 DEFINE_DIAGNOSTIC(
-    AutoReturn,
-    auto-return,
+    AutoReturn, "auto-return",
     "functions with automatic return type are not allowed");
 
 DEFINE_DIAGNOSTIC(
-    AutoVariable,
-    auto-variable,
+    AutoVariable, "auto-variable",
     "variables with automatic type are not allowed");
 
 DEFINE_DIAGNOSTIC(
-    UserDefinedLiteral,
-    user-defined-literal,
+    UserDefinedLiteral, "user-defined-literal",
     "user-defined literals are not allowed");
 
 DEFINE_DIAGNOSTIC(
-    DefaultArgument,
-    default-argument,
+    DefaultArgument, "default-argument",
     "default arguments are not allowed");
 
 DEFINE_DIAGNOSTIC(
-    Namespace,
-    namespace,
+    Namespace, "namespace",
     "namespaces are not allowed");
