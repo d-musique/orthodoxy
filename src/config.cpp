@@ -70,6 +70,7 @@ void yaml::MappingTraits<OrthodoxyConfig>::mapping(yaml::IO &io, OrthodoxyConfig
     io.mapOptional("UserDefinedLiteral", info.UserDefinedLiteral);
     io.mapOptional("DefaultArgument", info.DefaultArgument);
     io.mapOptional("Namespace", info.Namespace);
+    io.mapOptional("Mutable", info.Mutable);
 }
 
 std::error_code Orthodoxy::ParseConfig(llvm::MemoryBuffer &mb, OrthodoxyConfig &config)

@@ -184,3 +184,7 @@ DEFINE_DIAGNOSTIC(
 DEFINE_DIAGNOSTIC(
     Namespace, "namespace", nullptr,
     "namespaces are not allowed");
+
+DEFINE_DIAGNOSTIC(
+    Mutable, "mutable", nullptr,
+    "the mutable qualifier is not allowed");

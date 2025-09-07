@@ -63,6 +63,7 @@ struct OrthodoxyConfig
     bool UserDefinedLiteral = true;
     bool DefaultArgument = true;
     bool Namespace = true;
+    bool Mutable = true;
 };
 
 namespace Orthodoxy {

@@ -310,6 +310,9 @@ bool OrthodoxyASTConsumer::Private::ASTVisitor::VisitFieldDecl(const clang::Fiel
     else if ((!config.Reference || !config.LValueReference) && Orthodoxy::TypeIsLvalueReference(FD->getType()))
         priv->Report(FD->getLocation(), Orthodoxy::diag::LValueReference());
 
+    if (!config.Mutable && FD->isMutable())
+        priv->Report(FD->getLocation(), Orthodoxy::diag::Mutable());
+
     return true;
 }
 

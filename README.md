@@ -157,6 +157,7 @@ helper scripts.**
 - [x] `UserDefinedLiteral (bool)` user-defined literals
 - [x] `DefaultArgument (bool)` default arguments
 - [x] `Namespace (bool)` namespaces
+- [x] `Mutable (bool)` variables declared with the `mutable` qualifier
 
 ## Motivation
 
