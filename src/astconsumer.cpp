@@ -393,6 +393,8 @@ bool OrthodoxyASTConsumer::Private::ASTVisitor::VisitCXXRecordDecl(const clang::
 
     if (RD->hasDefinition())
     {
+        // struct definitions, including non-instantiated templates
+
         if (!config.VirtualInheritance && RD->vbases_begin() != RD->vbases_end())
             priv->Report(RD->getBeginLoc(), Orthodoxy::diag::VirtualInheritance());
         else if (!config.Inheritance && RD->bases_begin() != RD->bases_end())
@@ -407,13 +409,26 @@ bool OrthodoxyASTConsumer::Private::ASTVisitor::VisitCXXRecordDecl(const clang::
                 priv->Report(BS.getBeginLoc(), Orthodoxy::diag::InheritanceAccess());
             }
         }
+    }
+
+    if (RD->hasDefinition() && !RD->getDescribedClassTemplate())
+    {
+        // struct definitions, excluding non-instantiated templates
+
+        auto getLocation = [](const clang::CXXRecordDecl *RD) -> clang::SourceLocation
+        {
+            const clang::ClassTemplateSpecializationDecl *TSD =
+                llvm::dyn_cast<clang::ClassTemplateSpecializationDecl>(RD);
+            if (TSD) return TSD->getPointOfInstantiation();
+            return RD->getBeginLoc();
+        };
 
         if (!config.NonStandardLayout && !RD->isStandardLayout())
-            priv->Report(RD->getBeginLoc(), Orthodoxy::diag::NonStandardLayout());
+            priv->Report(getLocation(RD), Orthodoxy::diag::NonStandardLayout());
         else if (!config.NonTrivial && !RD->isTrivial())
-            priv->Report(RD->getBeginLoc(), Orthodoxy::diag::NonTrivial());
+            priv->Report(getLocation(RD), Orthodoxy::diag::NonTrivial());
         else if (!config.NonPOD && !RD->isPOD())
-            priv->Report(RD->getBeginLoc(), Orthodoxy::diag::NonPOD());
+            priv->Report(getLocation(RD), Orthodoxy::diag::NonPOD());
     }
 
     return true;
