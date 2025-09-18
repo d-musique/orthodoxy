@@ -415,20 +415,24 @@ bool OrthodoxyASTConsumer::Private::ASTVisitor::VisitCXXRecordDecl(const clang::
     {
         // struct definitions, excluding non-instantiated templates
 
-        auto getLocation = [](const clang::CXXRecordDecl *RD) -> clang::SourceLocation
-        {
-            const clang::ClassTemplateSpecializationDecl *TSD =
-                llvm::dyn_cast<clang::ClassTemplateSpecializationDecl>(RD);
-            if (TSD) return TSD->getPointOfInstantiation();
-            return RD->getBeginLoc();
-        };
+        const clang::ClassTemplateSpecializationDecl *TSD =
+            llvm::dyn_cast<clang::ClassTemplateSpecializationDecl>(RD);
 
-        if (!config.NonStandardLayout && !RD->isStandardLayout())
-            priv->Report(getLocation(RD), Orthodoxy::diag::NonStandardLayout());
-        else if (!config.NonTrivial && !RD->isTrivial())
-            priv->Report(getLocation(RD), Orthodoxy::diag::NonTrivial());
-        else if (!config.NonPOD && !RD->isPOD())
-            priv->Report(getLocation(RD), Orthodoxy::diag::NonPOD());
+        if (!TSD || clang::isTemplateInstantiation(TSD->getSpecializationKind()))
+        {
+            auto getLocation = [RD, TSD]() -> clang::SourceLocation
+            {
+                if (TSD) return TSD->getPointOfInstantiation();
+                return RD->getBeginLoc();
+            };
+
+            if (!config.NonStandardLayout && !RD->isStandardLayout())
+                priv->Report(getLocation(), Orthodoxy::diag::NonStandardLayout());
+            else if (!config.NonTrivial && !RD->isTrivial())
+                priv->Report(getLocation(), Orthodoxy::diag::NonTrivial());
+            else if (!config.NonPOD && !RD->isPOD())
+                priv->Report(getLocation(), Orthodoxy::diag::NonPOD());
+        }
     }
 
     return true;

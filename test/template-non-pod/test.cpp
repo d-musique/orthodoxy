@@ -40,3 +40,22 @@ void foo()
     { ArrayGenericN<int, 256> x; }
     { ArrayGenericN<std::string, 256> x; } // EXPECT(non-pod)
 }
+
+/* template specializations */
+
+template <typename... Ts> struct variadic;
+template <typename... Ts> struct variadic<int, Ts...> { variadic<Ts...> next; };
+template <typename... Ts> struct variadic<double, Ts...> { variadic<Ts...> next; };
+template <typename... Ts> struct variadic<const char *, Ts...> { variadic<Ts...> next; };
+template <> struct variadic<> {};
+
+template <typename... tps>
+void bar(tps...)
+{
+   (void)variadic<tps...>{};
+}
+
+void quux()
+{
+    bar(1, 2.0, "3");
+}
