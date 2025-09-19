@@ -8,6 +8,7 @@ BEFORE_LLVM
 AFTER_LLVM
 
 namespace clang { class TagDecl; }
+namespace clang { class ClassTemplateSpecializationDecl; }
 
 namespace Orthodoxy {
 
@@ -32,5 +33,8 @@ bool FunctionIsCopyAssignmentOperator(const clang::FunctionDecl *FD);
 bool FunctionIsMoveAssignmentOperator(const clang::FunctionDecl *FD);
 
 unsigned int NamespaceDepth(const clang::NamespaceDecl *ND, bool countAnonymous);
+
+const clang::ClassTemplateSpecializationDecl *OuterTemplateSpecialization(const clang::DeclContext *DC);
+const clang::ClassTemplateSpecializationDecl *OutermostTemplateSpecialization(const clang::DeclContext *DC);
 
 } // namespace Orthodoxy

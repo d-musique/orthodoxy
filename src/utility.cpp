@@ -5,6 +5,7 @@
 BEFORE_LLVM
 #include <clang/AST/Decl.h>
 #include <clang/AST/DeclCXX.h>
+#include <clang/AST/DeclTemplate.h>
 #include <clang/Basic/Version.h>
 AFTER_LLVM
 
@@ -117,4 +118,26 @@ unsigned int Orthodoxy::NamespaceDepth(const clang::NamespaceDecl *ND, bool coun
     }
 
     return depth;
+}
+
+const clang::ClassTemplateSpecializationDecl *Orthodoxy::OuterTemplateSpecialization(const clang::DeclContext *DC)
+{
+    while (DC)
+    {
+        const clang::ClassTemplateSpecializationDecl *TSD =
+            llvm::dyn_cast<clang::ClassTemplateSpecializationDecl>(DC);
+        if (TSD)
+            return TSD;
+        DC = DC->getParent();
+    }
+    return NULL;
+}
+
+const clang::ClassTemplateSpecializationDecl *Orthodoxy::OutermostTemplateSpecialization(const clang::DeclContext *DC)
+{
+    const clang::ClassTemplateSpecializationDecl *TSD = OuterTemplateSpecialization(DC);
+    const clang::ClassTemplateSpecializationDecl *nextTSD;
+    while (TSD && (nextTSD = OuterTemplateSpecialization(TSD->getParent())))
+        TSD = nextTSD;
+    return TSD;
 }

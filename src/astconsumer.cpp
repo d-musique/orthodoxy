@@ -411,28 +411,25 @@ bool OrthodoxyASTConsumer::Private::ASTVisitor::VisitCXXRecordDecl(const clang::
         }
     }
 
-    if (RD->hasDefinition() && !RD->getDescribedClassTemplate())
+    if (RD->hasDefinition() && !RD->isDependentType())
     {
-        // struct definitions, excluding non-instantiated templates
-
-        const clang::ClassTemplateSpecializationDecl *TSD =
-            llvm::dyn_cast<clang::ClassTemplateSpecializationDecl>(RD);
-
-        if (!TSD || clang::isTemplateInstantiation(TSD->getSpecializationKind()))
+        auto getInstantiatedLocation = [](const clang::RecordDecl *RD) -> clang::SourceLocation
         {
-            auto getLocation = [RD, TSD]() -> clang::SourceLocation
+            if (const clang::ClassTemplateSpecializationDecl *TSD =
+                Orthodoxy::OutermostTemplateSpecialization(RD))
             {
-                if (TSD) return TSD->getPointOfInstantiation();
-                return RD->getBeginLoc();
-            };
+                clang::SourceLocation loc = TSD->getPointOfInstantiation();
+                if (loc.isValid()) return loc;
+            }
+            return RD->getBeginLoc();
+        };
 
-            if (!config.NonStandardLayout && !RD->isStandardLayout())
-                priv->Report(getLocation(), Orthodoxy::diag::NonStandardLayout());
-            else if (!config.NonTrivial && !RD->isTrivial())
-                priv->Report(getLocation(), Orthodoxy::diag::NonTrivial());
-            else if (!config.NonPOD && !RD->isPOD())
-                priv->Report(getLocation(), Orthodoxy::diag::NonPOD());
-        }
+        if (!config.NonStandardLayout && !RD->isStandardLayout())
+            priv->Report(getInstantiatedLocation(RD), Orthodoxy::diag::NonStandardLayout());
+        else if (!config.NonTrivial && !RD->isTrivial())
+            priv->Report(getInstantiatedLocation(RD), Orthodoxy::diag::NonTrivial());
+        else if (!config.NonPOD && !RD->isPOD())
+            priv->Report(getInstantiatedLocation(RD), Orthodoxy::diag::NonPOD());
     }
 
     return true;

@@ -43,19 +43,19 @@ void foo()
 
 /* template specializations */
 
-template <typename... Ts> struct variadic;
-template <typename... Ts> struct variadic<int, Ts...> { variadic<Ts...> next; };
-template <typename... Ts> struct variadic<double, Ts...> { variadic<Ts...> next; };
-template <typename... Ts> struct variadic<const char *, Ts...> { variadic<Ts...> next; };
-template <> struct variadic<> {};
+template <typename T> struct Specialized;
+template <> struct Specialized<int> { int x; };
+template <> struct Specialized<std::string> { std::string x; }; // EXPECT(non-pod)
+Specialized<int> xS;
+Specialized<std::string> yS;
 
-template <typename... tps>
-void bar(tps...)
-{
-   (void)variadic<tps...>{};
-}
+/* template nested struct */
 
-void quux()
-{
-    bar(1, 2.0, "3");
-}
+template <typename T> struct Outer1 { struct Inner { T x; }; };
+Outer1<int>::Inner x1;
+Outer1<std::string>::Inner y1; // EXPECT(non-pod)
+
+template <typename T> struct Outer2 { struct Inner; };
+template <typename T> struct Outer2<T>::Inner { T x; };
+Outer2<int>::Inner x2;
+Outer2<std::string>::Inner y2; // EXPECT(non-pod)
