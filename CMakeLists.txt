@@ -200,14 +200,14 @@ configure_package_config_file(
   INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/orthodoxy"
   PATH_VARS ACTUAL_CLANG_PLUGIN_BASE_DIR)
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/orthodoxyConfig.cmake"
-  DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/orthodoxy")
+  DESTINATION "${CMAKE_INSTALL_DATADIR}/cmake/orthodoxy")
 
 configure_file(
   "pkgconfig/orthodoxy-for-clang.pc.in"
   "${CMAKE_CURRENT_BINARY_DIR}/orthodoxy-for-clang${LLVM_MAJOR_VERSION}.pc"
   @ONLY)
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/orthodoxy-for-clang${LLVM_MAJOR_VERSION}.pc"
-  DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig")
+  DESTINATION "${CMAKE_INSTALL_DATADIR}/pkgconfig")
 
 #---------------------------------------------------------------------
 # Tests
