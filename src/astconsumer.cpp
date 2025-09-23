@@ -331,6 +331,8 @@ bool OrthodoxyASTConsumer::Private::ASTVisitor::VisitValueDecl(const clang::Valu
         priv->Report(VD->getLocation(), Orthodoxy::diag::RValueReference());
     else if ((!config.Reference || !config.LValueReference) && Orthodoxy::TypeIsLvalueReference(VD->getType()))
         priv->Report(VD->getLocation(), Orthodoxy::diag::LValueReference());
+    else if ((!config.Reference || !config.ReferenceToNonConst) && Orthodoxy::TypeIsReferenceToNonConst(VD->getType()))
+        priv->Report(VD->getLocation(), Orthodoxy::diag::ReferenceToNonConst());
 
     return true;
 }

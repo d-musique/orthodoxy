@@ -147,9 +147,8 @@ DEFINE_DIAGNOSTIC(
     ConversionOverload, "conversion-overload", &Overload(),
     "conversion operator overloading is not allowed");
 
-DEFINE_DIAGNOSTIC(
-    Reference, "reference", nullptr,
-    "references are not allowed");
+DEFINE_ABSTRACT_DIAGNOSTIC(
+    Reference, "reference", nullptr);
 
 DEFINE_DIAGNOSTIC(
     RValueReference, "rvalue-reference", &Reference(),
@@ -158,6 +157,10 @@ DEFINE_DIAGNOSTIC(
 DEFINE_DIAGNOSTIC(
     LValueReference, "lvalue-reference", &Reference(),
     "l-value references are not allowed");
+
+DEFINE_DIAGNOSTIC(
+    ReferenceToNonConst, "reference-to-non-const", &Reference(),
+    "references to non-const are not allowed");
 
 DEFINE_ABSTRACT_DIAGNOSTIC(
     Module, "module", nullptr);

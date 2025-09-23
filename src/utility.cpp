@@ -43,6 +43,18 @@ bool Orthodoxy::TypeIsRvalueReference(const clang::Type *ty)
     return tc == clang::Type::TypeClass::RValueReference;
 }
 
+bool Orthodoxy::TypeIsReferenceToNonConst(clang::QualType qty)
+{
+    return TypeIsReferenceToNonConst(qty.getTypePtrOrNull());
+}
+
+bool Orthodoxy::TypeIsReferenceToNonConst(const clang::Type *ty)
+{
+    if (!ty) return false;
+    const clang::ReferenceType *rty = llvm::dyn_cast<clang::ReferenceType>(ty);
+    return rty && !rty->getPointeeType().isConstQualified();
+}
+
 bool Orthodoxy::TypeIsAuto(clang::QualType qty)
 {
     return TypeIsAuto(qty.getTypePtrOrNull());

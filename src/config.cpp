@@ -67,6 +67,7 @@ void yaml::MappingTraits<OrthodoxyConfig>::mapping(yaml::IO &io, OrthodoxyConfig
     io.mapOptional("Reference", info.Reference);
     io.mapOptional("RValueReference", info.RValueReference);
     io.mapOptional("LValueReference", info.LValueReference);
+    io.mapOptional("ReferenceToNonConst", info.ReferenceToNonConst);
     io.mapOptional("Lambda", info.Lambda);
     io.mapOptional("LambdaCapture", info.LambdaCapture);
     io.mapOptional("New", info.New);

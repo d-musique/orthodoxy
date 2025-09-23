@@ -145,6 +145,7 @@ helper scripts.**
 - [x] `Reference (bool)` references of all kinds
     - [x] `RvalueReference (bool)` r-value references
     - [x] `LvalueReference (bool)` l-value references
+    - [x] `ReferenceToNonConst (bool)` references to non-const types
 - [x] `Exception (bool)` all exception handling
     - [x] `Throw (bool)` exception throwing
     - [x] `TryCatch (bool)` exception catching

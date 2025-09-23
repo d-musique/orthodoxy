@@ -60,6 +60,7 @@ struct OrthodoxyConfig
     bool Reference = true;
     bool RValueReference = true;
     bool LValueReference = true;
+    bool ReferenceToNonConst = true;
     bool Lambda = true;
     bool LambdaCapture = true;
     bool New = true;

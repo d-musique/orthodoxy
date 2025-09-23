@@ -19,6 +19,8 @@ bool TypeIsLvalueReference(clang::QualType qty);
 bool TypeIsLvalueReference(const clang::Type *ty);
 bool TypeIsRvalueReference(clang::QualType qty);
 bool TypeIsRvalueReference(const clang::Type *ty);
+bool TypeIsReferenceToNonConst(clang::QualType qty);
+bool TypeIsReferenceToNonConst(const clang::Type *ty);
 bool TypeIsAuto(clang::QualType qty);
 bool TypeIsAuto(const clang::Type *ty);
 
