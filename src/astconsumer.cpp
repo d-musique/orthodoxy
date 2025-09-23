@@ -43,6 +43,7 @@ struct OrthodoxyASTConsumer::Private
         bool VisitParmVarDecl(const clang::ParmVarDecl *VD);
         bool VisitVarDecl(const clang::VarDecl *VD);
         bool VisitFieldDecl(const clang::FieldDecl *FD);
+        bool VisitValueDecl(const clang::ValueDecl *VD);
         bool VisitTemplateDecl(const clang::TemplateDecl *TD);
         bool VisitNamespaceDecl(const clang::NamespaceDecl *ND);
         bool VisitLambdaExpr(const clang::LambdaExpr *LE);
@@ -304,10 +305,6 @@ bool OrthodoxyASTConsumer::Private::ASTVisitor::VisitVarDecl(const clang::VarDec
 
     if ((!config.Auto || !config.AutoVariable) && Orthodoxy::TypeIsAuto(VD->getType()))
         priv->Report(VD->getLocation(), Orthodoxy::diag::AutoVariable());
-    else if ((!config.Reference || !config.RValueReference) && Orthodoxy::TypeIsRvalueReference(VD->getType()))
-        priv->Report(VD->getLocation(), Orthodoxy::diag::RValueReference());
-    else if ((!config.Reference || !config.LValueReference) && Orthodoxy::TypeIsLvalueReference(VD->getType()))
-        priv->Report(VD->getLocation(), Orthodoxy::diag::LValueReference());
 
     return true;
 }
@@ -318,15 +315,22 @@ bool OrthodoxyASTConsumer::Private::ASTVisitor::VisitFieldDecl(const clang::Fiel
     OrthodoxyConfigManager &CM = *priv->M_CM;
     OrthodoxyConfig &config = CM.GetConfigForDecl(FD);
 
-    if ((!config.Reference || !config.RValueReference) && Orthodoxy::TypeIsRvalueReference(FD->getType()))
-        priv->Report(FD->getLocation(), Orthodoxy::diag::RValueReference());
-    else if ((!config.Reference || !config.RValueReference) && Orthodoxy::TypeIsRvalueReference(FD->getType()))
-        priv->Report(FD->getLocation(), Orthodoxy::diag::RValueReference());
-    else if ((!config.Reference || !config.LValueReference) && Orthodoxy::TypeIsLvalueReference(FD->getType()))
-        priv->Report(FD->getLocation(), Orthodoxy::diag::LValueReference());
-
     if (!config.Mutable && FD->isMutable())
         priv->Report(FD->getLocation(), Orthodoxy::diag::Mutable());
+
+    return true;
+}
+
+bool OrthodoxyASTConsumer::Private::ASTVisitor::VisitValueDecl(const clang::ValueDecl *VD)
+{
+    Private *priv = M_priv;
+    OrthodoxyConfigManager &CM = *priv->M_CM;
+    OrthodoxyConfig &config = CM.GetConfigForDecl(VD);
+
+    if ((!config.Reference || !config.RValueReference) && Orthodoxy::TypeIsRvalueReference(VD->getType()))
+        priv->Report(VD->getLocation(), Orthodoxy::diag::RValueReference());
+    else if ((!config.Reference || !config.LValueReference) && Orthodoxy::TypeIsLvalueReference(VD->getType()))
+        priv->Report(VD->getLocation(), Orthodoxy::diag::LValueReference());
 
     return true;
 }
