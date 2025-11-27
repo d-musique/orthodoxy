@@ -44,6 +44,7 @@ struct OrthodoxyConfig
     bool MemberAccess = true;
     bool InheritanceAccess = true;
     bool ImplicitThis = true;
+    bool ImplicitStaticMemberQualifier = true;
     bool CStyleCast = true;
     bool NamedCast = true;
     bool DynamicCast = true;

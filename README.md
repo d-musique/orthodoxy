@@ -129,6 +129,7 @@ helper scripts.**
     - [x] `MemberAccess (bool)` member access specifier
     - [x] `InheritanceAccess (bool)` inheritance access specifier
 - [x] `ImplicitThis (bool)` member access without an explicit `this`
+- [x] `ImplicitStaticMemberQualifier (bool)` static member access without an explicit `class::` qualifier
 - [x] `CStyleCast (bool)` C-style casts
 - [x] `NamedCast (bool)` all C++-style named casts
     - [x] `DynamicCast (bool)` dynamic casts 

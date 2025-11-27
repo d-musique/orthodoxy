@@ -115,6 +115,15 @@ bool Orthodoxy::FunctionIsMoveAssignmentOperator(const clang::FunctionDecl *FD)
     return MD ? MD->isMoveAssignmentOperator() : false;
 }
 
+bool Orthodoxy::NamedDeclIsStaticMember(const clang::NamedDecl *ND)
+{
+    const clang::VarDecl *VD;
+    const clang::CXXMethodDecl *MD;
+    return ND->isCXXClassMember() &&
+        (((VD = llvm::dyn_cast<clang::VarDecl>(ND)) && VD->isStaticDataMember()) ||
+         ((MD = llvm::dyn_cast<clang::CXXMethodDecl>(ND)) && MD->isStatic()));
+}
+
 unsigned int Orthodoxy::NamespaceDepth(const clang::NamespaceDecl *ND, bool countAnonymous)
 {
     unsigned int depth =

@@ -97,6 +97,10 @@ DEFINE_DIAGNOSTIC(
     "implicit this is not allowed");
 
 DEFINE_DIAGNOSTIC(
+    ImplicitStaticMemberQualifier, "implicit-static-member-qualifier", nullptr,
+    "implicit static member qualifier is not allowed");
+
+DEFINE_DIAGNOSTIC(
     CStyleCast, "c-style-cast", nullptr,
     "C-style casts are not allowed");
 

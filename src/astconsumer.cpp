@@ -47,6 +47,7 @@ struct OrthodoxyASTConsumer::Private
         bool VisitTemplateDecl(const clang::TemplateDecl *TD);
         bool VisitNamespaceDecl(const clang::NamespaceDecl *ND);
         bool VisitLambdaExpr(const clang::LambdaExpr *LE);
+        bool VisitDeclRefExpr(const clang::DeclRefExpr *RE);
         bool VisitCStyleCastExpr(const clang::CStyleCastExpr *CE);
         bool VisitCXXRecordDecl(const clang::CXXRecordDecl *RD);
         bool VisitCXXMethodDecl(const clang::CXXMethodDecl *MD);
@@ -375,6 +376,21 @@ bool OrthodoxyASTConsumer::Private::ASTVisitor::VisitLambdaExpr(const clang::Lam
         priv->Report(LE->getExprLoc(), Orthodoxy::diag::Lambda());
     else if (!config.LambdaCapture && LE->capture_begin() != LE->capture_end())
         priv->Report(LE->getExprLoc(), Orthodoxy::diag::LambdaCapture());
+
+    return true;
+}
+
+bool OrthodoxyASTConsumer::Private::ASTVisitor::VisitDeclRefExpr(const clang::DeclRefExpr *RE)
+{
+    Private *priv = M_priv;
+    OrthodoxyConfigManager &CM = *priv->M_CM;
+    OrthodoxyConfig &config = CM.GetConfigForExpr(RE);
+
+    if (!config.ImplicitStaticMemberQualifier && !RE->hasQualifier())
+    {
+        if (Orthodoxy::NamedDeclIsStaticMember(RE->getFoundDecl()))
+            priv->Report(RE->getLocation(), Orthodoxy::diag::ImplicitStaticMemberQualifier());
+    }
 
     return true;
 }

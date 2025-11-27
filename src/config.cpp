@@ -51,6 +51,7 @@ void yaml::MappingTraits<OrthodoxyConfig>::mapping(yaml::IO &io, OrthodoxyConfig
     io.mapOptional("MemberAccess", info.MemberAccess);
     io.mapOptional("InheritanceAccess", info.InheritanceAccess);
     io.mapOptional("ImplicitThis", info.ImplicitThis);
+    io.mapOptional("ImplicitStaticMemberQualifier", info.ImplicitStaticMemberQualifier);
     io.mapOptional("CStyleCast", info.CStyleCast);
     io.mapOptional("NamedCast", info.NamedCast);
     io.mapOptional("DynamicCast", info.DynamicCast);
