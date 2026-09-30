@@ -4,9 +4,9 @@ name: orthodoxy
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "master", "testing" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "master", "testing" ]
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
@@ -15,13 +15,15 @@ env:
 jobs:
   build:
     strategy:
+      fail-fast: false
+
       matrix:
-        clangversion: [20, 19, 18, 17, 16]
+        clangversion: [22, 21, 20, 19, 18, 17]
 
     # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
     # You can convert this to a matrix build if you need cross-platform coverage.
     # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
 
     steps:
     - name: Optimize
@@ -37,6 +39,15 @@ jobs:
           llvm-${{matrix.clangversion}}-dev
 
     - uses: actions/checkout@v4
+
+    - name: Inspect clang files
+      run: |
+        /usr/bin/llvm-config-${{matrix.clangversion}} --version
+        /usr/bin/llvm-config-${{matrix.clangversion}} --libdir
+        /usr/bin/llvm-config-${{matrix.clangversion}} --libs
+        /usr/bin/llvm-config-${{matrix.clangversion}} --system-libs
+        /usr/bin/llvm-config-${{matrix.clangversion}} --cxxflags
+        ls -l "$(/usr/bin/llvm-config-${{matrix.clangversion}} --libdir)/"
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
