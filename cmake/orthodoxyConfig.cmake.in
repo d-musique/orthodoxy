@@ -38,7 +38,7 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     #
     if(NOT TARGET orthodoxy::plugin)
       add_library(orthodoxy::plugin INTERFACE IMPORTED)
-      target_compile_options(orthodoxy::plugin INTERFACE "-fplugin=${ORTHODOXY_CLANG_PLUGIN}")
+      target_compile_options(orthodoxy::plugin INTERFACE "$<$<COMPILE_LANGUAGE:CXX>:-fplugin=${ORTHODOXY_CLANG_PLUGIN}>")
     endif()
   endif()
   #
