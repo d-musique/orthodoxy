@@ -34,11 +34,12 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     set_and_check(ORTHODOXY_CLANG_PLUGIN_DIR "${ORTHODOXY_CLANG_PLUGIN_BASE_DIR}/${_clangMajorVersion}")
     set_and_check(ORTHODOXY_CLANG_PLUGIN "${ORTHODOXY_CLANG_PLUGIN_DIR}/${_orthodoxyPluginFile}")
     message(STATUS "Found orthodoxy plugin: ${ORTHODOXY_CLANG_PLUGIN}")
-    #
-    add_library(orthodoxy-plugin INTERFACE)
-    target_compile_options(orthodoxy-plugin INTERFACE "-fplugin=${ORTHODOXY_CLANG_PLUGIN}")
-    add_library(orthodoxy::plugin ALIAS orthodoxy-plugin)
     set(orthodoxy_plugin_FOUND TRUE)
+    #
+    if(NOT TARGET orthodoxy::plugin)
+      add_library(orthodoxy::plugin INTERFACE IMPORTED)
+      target_compile_options(orthodoxy::plugin INTERFACE "-fplugin=${ORTHODOXY_CLANG_PLUGIN}")
+    endif()
   endif()
   #
   unset(_clangVersion)
