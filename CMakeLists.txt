@@ -134,6 +134,7 @@ endif()
 # XXX Clang does not currently have a standard install location for plugins
 # see llvm/llvm-project#156821
 set(ACTUAL_CLANG_PLUGIN_BASE_DIR "${CMAKE_INSTALL_FULL_LIBDIR}/orthodoxy")
+set(ACTUAL_CLANG_PLUGIN_BASE_DIR_FOR_PKGCONFIG "\${libdir}/orthodoxy")
 set(ACTUAL_CLANG_PLUGIN_DIR "${ACTUAL_CLANG_PLUGIN_BASE_DIR}/${LLVM_MAJOR_VERSION}")
 
 message(STATUS "LLVM tool suffix: ${ACTUAL_LLVM_TOOL_SUFFIX}")

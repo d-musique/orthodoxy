@@ -1,4 +1,6 @@
-pluginbasedir=@ACTUAL_CLANG_PLUGIN_BASE_DIR@
+prefix=@CMAKE_INSTALL_PREFIX@
+libdir=${prefix}/@CMAKE_INSTALL_LIBDIR@
+pluginbasedir=@ACTUAL_CLANG_PLUGIN_BASE_DIR_FOR_PKGCONFIG@
 plugindir=${pluginbasedir}/@LLVM_MAJOR_VERSION@
 pluginfile=${plugindir}/orthodoxy@CMAKE_SHARED_MODULE_SUFFIX@
 
