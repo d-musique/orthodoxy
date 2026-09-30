@@ -14,7 +14,7 @@ AFTER_LLVM
 struct OrthodoxyConfigManager::Private
 {
     clang::CompilerInstance *M_CI;
-    llvm::SmallMapVector<clang::FileID, std::unique_ptr<OrthodoxyConfig>, 64> M_configs;
+    llvm::SmallMapVector<clang::FileID, std::unique_ptr<OrthodoxyConfig>, 32> M_configs;
 };
 
 static const llvm::StringRef YamlNames[] =
