@@ -86,7 +86,7 @@ struct OrthodoxyASTConsumer::Private
     bool IsIncludeAccepted(llvm::StringRef incPath, const OrthodoxyConfig &config);
     llvm::GlobPattern *GetCachedGlobOrNull(llvm::StringRef pattern);
     //
-    std::optional<clang::DiagnosticBuilder> Report(clang::SourceLocation loc, const OrthodoxyDiagDesc &diag);
+    std::optional<clang::DiagnosticBuilder> Report(clang::SourceLocation loc, const OrthodoxyDiagDesc &diag, clang::SourceLocation otherSuppressionLoc = {});
     bool IsSuppressedLocation(clang::SourceLocation loc, const OrthodoxyDiagDesc &diag);
     static bool LineHasSuppressionComment(llvm::StringRef data, unsigned offset, const OrthodoxyDiagDesc &diag);
 };
@@ -446,12 +446,15 @@ bool OrthodoxyASTConsumer::Private::ASTVisitor::VisitCXXRecordDecl(const clang::
             return RD->getBeginLoc();
         };
 
+        // NOTE make sure to always pass the location of the
+        // definition as the alternative suppression location
+
         if (!config.NonStandardLayout && !RD->isStandardLayout())
-            priv->Report(getInstantiatedLocation(RD), Orthodoxy::diag::NonStandardLayout());
+            priv->Report(getInstantiatedLocation(RD), Orthodoxy::diag::NonStandardLayout(), RD->getBeginLoc());
         else if (!config.NonTrivial && !RD->isTrivial())
-            priv->Report(getInstantiatedLocation(RD), Orthodoxy::diag::NonTrivial());
+            priv->Report(getInstantiatedLocation(RD), Orthodoxy::diag::NonTrivial(), RD->getBeginLoc());
         else if (!config.NonPOD && !RD->isPOD())
-            priv->Report(getInstantiatedLocation(RD), Orthodoxy::diag::NonPOD());
+            priv->Report(getInstantiatedLocation(RD), Orthodoxy::diag::NonPOD(), RD->getBeginLoc());
     }
 
     return true;
@@ -576,11 +579,12 @@ bool OrthodoxyASTConsumer::Private::ASTVisitor::VisitCXXForRangeStmt(const clang
     return true;
 }
 
-std::optional<clang::DiagnosticBuilder> OrthodoxyASTConsumer::Private::Report(clang::SourceLocation loc, const OrthodoxyDiagDesc &diag)
+std::optional<clang::DiagnosticBuilder> OrthodoxyASTConsumer::Private::Report(clang::SourceLocation loc, const OrthodoxyDiagDesc &diag, clang::SourceLocation otherSuppressionLoc)
 {
     clang::DiagnosticsEngine &DE = *M_DE;
 
     if (IsSuppressedLocation(loc, diag)) return {};
+    if (IsSuppressedLocation(otherSuppressionLoc, diag)) return {};
 
 #if defined(USE_CLANG_DIAG_DESC)
     unsigned diagID = DE.getDiagnosticIDs()->getCustomDiagID(diag);

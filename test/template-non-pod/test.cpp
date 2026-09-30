@@ -59,3 +59,13 @@ template <typename T> struct Outer2 { struct Inner; };
 template <typename T> struct Outer2<T>::Inner { T x; };
 Outer2<int>::Inner x2;
 Outer2<std::string>::Inner y2; // EXPECT(non-pod)
+
+/* suppression on template definition */
+
+template <typename T>
+struct Suppressed // HERESY(non-pod)
+{
+    Suppressed() {}
+};
+
+Suppressed<int> suppressed;
